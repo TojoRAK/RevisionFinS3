@@ -1,112 +1,158 @@
+-- Active: 1742219108388@@127.0.0.1@3306@takalo_takalo
 -- =========================
--- Takalo-takalo (PostgreSQL)
+-- Takalo-takalo (MySQL)
 -- Création + données de test
 -- =========================
 
-BEGIN;
+-- (Optionnel) créer la base
+CREATE DATABASE IF NOT EXISTS takalo_takalo
+  DEFAULT CHARACTER SET utf8mb4
+  DEFAULT COLLATE utf8mb4_unicode_ci;
+
+USE takalo_takalo;
 
 -- (Optionnel) nettoyer si tu relances le script
-DROP TABLE IF EXISTS echange CASCADE;
-DROP TABLE IF EXISTS proposition CASCADE;
-DROP TABLE IF EXISTS histo_propietaire CASCADE;
-DROP TABLE IF EXISTS objet_image CASCADE;
-DROP TABLE IF EXISTS objet CASCADE;
-DROP TABLE IF EXISTS categories CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS echange;
+DROP TABLE IF EXISTS proposition;
+DROP TABLE IF EXISTS histo_propietaire;
+DROP TABLE IF EXISTS objet_image;
+DROP TABLE IF EXISTS objet;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
 
 -- =========================
 -- 1) TABLES
 -- =========================
 
 CREATE TABLE users (
-    id              BIGSERIAL PRIMARY KEY,
-    name            VARCHAR(120) NOT NULL,
-    role            VARCHAR(20)  NOT NULL DEFAULT 'USER',
-    created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
-    password_hash   VARCHAR(255) NOT NULL,
-
-    CONSTRAINT users_role_chk CHECK (role IN ('ADMIN','USER'))
-);
+  id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name          VARCHAR(120) NOT NULL,
+  role          ENUM('ADMIN','USER') NOT NULL DEFAULT 'USER',
+  created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  password_hash VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;
 
 CREATE TABLE categories (
-    id          BIGSERIAL PRIMARY KEY,
-    name        VARCHAR(80) NOT NULL UNIQUE,
-    created_at  TIMESTAMP   NOT NULL DEFAULT NOW()
-);
+  id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name        VARCHAR(80) NOT NULL,
+  created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_categories_name (name)
+) ENGINE=InnoDB;
 
 CREATE TABLE objet (
-    id              BIGSERIAL PRIMARY KEY,
-    title           VARCHAR(160) NOT NULL,
-    description     TEXT,
-    estimated_value NUMERIC(12,2) NOT NULL DEFAULT 0,
-    owner_user_id   BIGINT NOT NULL,
-    category_id     BIGINT NOT NULL,
-    created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+  id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  title           VARCHAR(160) NOT NULL,
+  description     TEXT,
+  estimated_value DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  owner_user_id   BIGINT UNSIGNED NOT NULL,
+  category_id     BIGINT UNSIGNED NOT NULL,
+  created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
 
-    CONSTRAINT objet_owner_fk    FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE RESTRICT,
-    CONSTRAINT objet_category_fk FOREIGN KEY (category_id)   REFERENCES categories(id) ON DELETE RESTRICT
-);
+  KEY idx_objet_owner (owner_user_id),
+  KEY idx_objet_category (category_id),
+
+  CONSTRAINT fk_objet_owner
+    FOREIGN KEY (owner_user_id) REFERENCES users(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT fk_objet_category
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 CREATE TABLE objet_image (
-    id          BIGSERIAL PRIMARY KEY,
-    objet_id    BIGINT NOT NULL,
-    path        VARCHAR(255) NOT NULL,
-    is_main     BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+  id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  objet_id   BIGINT UNSIGNED NOT NULL,
+  path       VARCHAR(255) NOT NULL,
+  is_main    TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT objet_image_objet_fk FOREIGN KEY (objet_id) REFERENCES objet(id) ON DELETE CASCADE
-);
+  -- Astuce MySQL: on génère une colonne NULL sauf si is_main=1
+  -- et on met un UNIQUE(objet_id, main_rank) => plusieurs NULL autorisés,
+  -- donc plusieurs images non-main possibles, mais une seule main.
+  main_rank  TINYINT GENERATED ALWAYS AS (CASE WHEN is_main = 1 THEN 1 ELSE NULL END) STORED,
 
--- Pour éviter plusieurs images "principales" sur le même objet (PostgreSQL)
-CREATE UNIQUE INDEX objet_image_one_main_per_objet
-ON objet_image (objet_id)
-WHERE is_main = TRUE;
+  PRIMARY KEY (id),
+  KEY idx_objet_image_objet (objet_id),
+  UNIQUE KEY uq_one_main_per_objet (objet_id, main_rank),
+
+  CONSTRAINT fk_objet_image_objet
+    FOREIGN KEY (objet_id) REFERENCES objet(id)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 CREATE TABLE proposition (
-    id              BIGSERIAL PRIMARY KEY,
-    requester_id    BIGINT NOT NULL,      -- celui qui propose
-    owner_id        BIGINT NOT NULL,      -- propriétaire de l'objet voulu
-    wanted_id       BIGINT NOT NULL,      -- objet voulu (appartient à owner_id)
-    offered_id      BIGINT NOT NULL,      -- objet proposé (appartient à requester_id)
-    message         TEXT,
-    status          VARCHAR(20) NOT NULL DEFAULT 'PENDING',
-    created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
-    responded_at    TIMESTAMP,
+  id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  requester_id  BIGINT UNSIGNED NOT NULL,
+  owner_id      BIGINT UNSIGNED NOT NULL,
+  wanted_id     BIGINT UNSIGNED NOT NULL,
+  offered_id    BIGINT UNSIGNED NOT NULL,
+  message       TEXT,
+  status        ENUM('PENDING','ACCEPTED','REJECTED','CANCELLED') NOT NULL DEFAULT 'PENDING',
+  created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  responded_at  TIMESTAMP NULL DEFAULT NULL,
 
-    CONSTRAINT proposition_requester_fk FOREIGN KEY (requester_id) REFERENCES users(id) ON DELETE RESTRICT,
-    CONSTRAINT proposition_owner_fk     FOREIGN KEY (owner_id)     REFERENCES users(id) ON DELETE RESTRICT,
-    CONSTRAINT proposition_wanted_fk    FOREIGN KEY (wanted_id)    REFERENCES objet(id) ON DELETE RESTRICT,
-    CONSTRAINT proposition_offered_fk   FOREIGN KEY (offered_id)   REFERENCES objet(id) ON DELETE RESTRICT,
+  PRIMARY KEY (id),
 
-    CONSTRAINT proposition_status_chk CHECK (status IN ('PENDING','ACCEPTED','REJECTED','CANCELLED')),
-    CONSTRAINT proposition_objects_diff_chk CHECK (wanted_id <> offered_id)
-);
+  KEY idx_prop_status (status),
+  KEY idx_prop_owner (owner_id),
+  KEY idx_prop_requester (requester_id),
+  KEY idx_prop_wanted (wanted_id),
+  KEY idx_prop_offered (offered_id),
+
+  CONSTRAINT fk_prop_requester
+    FOREIGN KEY (requester_id) REFERENCES users(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT fk_prop_owner
+    FOREIGN KEY (owner_id) REFERENCES users(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT fk_prop_wanted
+    FOREIGN KEY (wanted_id) REFERENCES objet(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT fk_prop_offered
+    FOREIGN KEY (offered_id) REFERENCES objet(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT chk_prop_objects_diff CHECK (wanted_id <> offered_id)
+) ENGINE=InnoDB;
 
 CREATE TABLE echange (
-    id              BIGSERIAL PRIMARY KEY,
-    proposition_id  BIGINT NOT NULL UNIQUE,
-    traded_at       TIMESTAMP NOT NULL DEFAULT NOW(),
+  id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  proposition_id  BIGINT UNSIGNED NOT NULL,
+  traded_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT echange_prop_fk FOREIGN KEY (proposition_id) REFERENCES proposition(id) ON DELETE CASCADE
-);
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_trade_one_prop (proposition_id),
 
--- Historique propriétaire (selon ta structure : seulement start_at)
+  CONSTRAINT fk_echange_prop
+    FOREIGN KEY (proposition_id) REFERENCES proposition(id)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE histo_propietaire (
-    id          BIGSERIAL PRIMARY KEY,
-    objet_id    BIGINT NOT NULL,
-    user_id     BIGINT NOT NULL,
-    start_at    TIMESTAMP NOT NULL DEFAULT NOW(),
+  id        BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  objet_id  BIGINT UNSIGNED NOT NULL,
+  user_id   BIGINT UNSIGNED NOT NULL,
+  start_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT histo_objet_fk FOREIGN KEY (objet_id) REFERENCES objet(id) ON DELETE CASCADE,
-    CONSTRAINT histo_user_fk  FOREIGN KEY (user_id)  REFERENCES users(id) ON DELETE RESTRICT
-);
+  PRIMARY KEY (id),
+  KEY idx_histo_objet (objet_id),
+  KEY idx_histo_user (user_id),
 
--- Index utiles
-CREATE INDEX idx_objet_owner      ON objet(owner_user_id);
-CREATE INDEX idx_objet_category   ON objet(category_id);
-CREATE INDEX idx_prop_status      ON proposition(status);
-CREATE INDEX idx_prop_owner       ON proposition(owner_id);
-CREATE INDEX idx_prop_requester   ON proposition(requester_id);
+  CONSTRAINT fk_histo_objet
+    FOREIGN KEY (objet_id) REFERENCES objet(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+
+  CONSTRAINT fk_histo_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 -- =========================
 -- 2) DONNÉES DE TEST
@@ -135,46 +181,5 @@ INSERT INTO objet (title, description, estimated_value, owner_user_id, category_
 ('T-shirt noir', 'Taille L, neuf', 20000, 4, 1),
 ('Livre Python débutant', 'Livre + exercices', 30000, 4, 2);
 
--- Images (mettre une image principale)
-INSERT INTO objet_image (objet_id, path, is_main) VALUES
-(1, '/uploads/items/1/main.jpg', TRUE),
-(1, '/uploads/items/1/2.jpg', FALSE),
-(2, '/uploads/items/2/main.jpg', TRUE),
-(3, '/uploads/items/3/main.jpg', TRUE),
-(4, '/uploads/items/4/main.jpg', TRUE),
-(5, '/uploads/items/5/main.jpg', TRUE),
-(6, '/uploads/items/6/main.jpg', TRUE);
-
--- Historique propriétaires (initial)
-INSERT INTO histo_propietaire (objet_id, user_id, start_at) VALUES
-(1, 2, NOW()), (2, 2, NOW()),
-(3, 3, NOW()), (4, 3, NOW()),
-(5, 4, NOW()), (6, 4, NOW());
-
--- Propositions :
--- Aina (2) propose son objet #2 (Petit Prince) contre le casque #4 de Koto (3)
-INSERT INTO proposition (requester_id, owner_id, wanted_id, offered_id, message, status)
-VALUES (2, 3, 4, 2, 'Salut, échange mon livre contre ton casque ?', 'PENDING');
-
--- Mina (4) propose son objet #6 contre la veste #1 de Aina (2) => acceptée
-INSERT INTO proposition (requester_id, owner_id, wanted_id, offered_id, message, status, responded_at)
-VALUES (4, 2, 1, 6, 'Je te propose mon livre Python contre ta veste.', 'ACCEPTED', NOW());
-
--- Échange créé pour la proposition acceptée (id=2 si c’est le 2e insert, mais on le récupère proprement)
-INSERT INTO echange (proposition_id, traded_at)
-SELECT id, NOW()
-FROM proposition
-WHERE status = 'ACCEPTED'
-ORDER BY id DESC
-LIMIT 1;
-
-COMMIT;
-
--- =========================
--- Vérifs rapides
--- =========================
--- SELECT * FROM users;
--- SELECT * FROM categories;
--- SELECT * FROM objet;
--- SELECT * FROM proposition;
--- SELECT * FROM echange;
+-- Images (une principale par objet)
+INSERT INTO objet_image (objet_id, path, is_main) VALUES_
