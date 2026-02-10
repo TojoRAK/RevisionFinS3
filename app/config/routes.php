@@ -2,6 +2,7 @@
 
 // use Flight;
 use app\controllers\CategorieController;
+use app\controllers\AuthClient;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
@@ -21,6 +22,10 @@ $router->group('', function (Router $router) {
         $router->get('/register', function () {
             Flight::render('client/register');
         });
+<<<<<<< Updated upstream
+=======
+        $router->post('/login' , [AuthClient::class , 'doLogin']);
+>>>>>>> Stashed changes
     });
 
     $router->group('/categories', function () use ($router) {

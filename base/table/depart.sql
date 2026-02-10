@@ -32,7 +32,6 @@ CREATE TABLE users (
   password_hash VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
-
 CREATE TABLE categories (
   id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name        VARCHAR(80) NOT NULL,
@@ -182,4 +181,4 @@ INSERT INTO objet (title, description, estimated_value, owner_user_id, category_
 ('Livre Python débutant', 'Livre + exercices', 30000, 4, 2);
 
 -- Images (une principale par objet)
-INSERT INTO objet_image (objet_id, path, is_main) VALUES_
+-- INSERT INTO objet_image (objet_id, path, is_main) VALUES_
