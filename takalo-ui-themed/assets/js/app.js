@@ -5,24 +5,7 @@
    - Multi-photo preview helper
 */
 (() => {
-<<<<<<< Updated upstream:takalo-ui-themed/assets/js/app.js
   const root = document.documentElement;
-=======
-  // Bootstrap validation style
-  // document.querySelectorAll('form.needs-validation').forEach((form) => {
-  //   form.addEventListener('submit', (event) => {
-  //     if (!form.checkValidity()) {
-  //       event.preventDefault();
-  //       event.stopPropagation();
-  //       toast("Veuillez corriger les erreurs du formulaire.", "warning");
-  //     } else {
-  //       event.preventDefault(); // no backend
-  //       toast("Action simulée (pas de backend).", "info");
-  //     }
-  //     form.classList.add('was-validated');
-  //   }, false);
-  // });
->>>>>>> Stashed changes:takalo-ui/assets/js/app.js
 
   // --- Theme ---
   const THEME_KEY = "tt_theme";
