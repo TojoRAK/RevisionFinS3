@@ -43,7 +43,7 @@ class CategorieModel
 
     public function deleteCategory($id)
     {
-
+      
         $checkStmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM objet WHERE category_id = ?");
         $checkStmt->execute([$id]);
         $result = $checkStmt->fetch(PDO::FETCH_ASSOC);
@@ -62,6 +62,14 @@ class CategorieModel
         $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE name = ?");
         $stmt->execute([$name]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    public function categoryExists($id)
+    {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM categories WHERE id = ?");
+        $stmt->execute([$id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'] > 0;
     }
 
 }
