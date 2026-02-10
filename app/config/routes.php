@@ -18,32 +18,20 @@ $router->group('', function (Router $router) {
 	});
 
 
-<<<<<<< Updated upstream
+
     $router->group('/auth', function () use ($router) {
         $router->get('/register', function () {
             Flight::render('client/register');
         });
-<<<<<<< Updated upstream
-=======
         $router->post('/login' , [AuthClient::class , 'doLogin']);
->>>>>>> Stashed changes
     });
 
 
-    //==============ADMIN================//
-    $router->group('/admin', function () use ($router) {
-        $router->get('/', function () {
-            Flight::render('admin/login');
-        });
-    });
-=======
 	$router->group('/auth', function () use ($router) {
 		$router->get('/register', function () {
 			Flight::render('client/register');
 		});
 	});
->>>>>>> Stashed changes
-
 
 
 	//==============ADMIN================//
