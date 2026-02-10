@@ -13,11 +13,12 @@ use flight\net\Router;
  */
 $router->group('', function (Router $router) {
 
-    $router->get('/', function () {
-        Flight::render('client/login');
-    });
+	$router->get('/', function () {
+		Flight::render('client/login');
+	});
 
 
+<<<<<<< Updated upstream
     $router->group('/auth', function () use ($router) {
         $router->get('/register', function () {
             Flight::render('client/register');
@@ -28,13 +29,6 @@ $router->group('', function (Router $router) {
 >>>>>>> Stashed changes
     });
 
-    $router->group('/categories', function () use ($router) {
-        $router->get('', [CategorieController::class, 'getAllCategories']);
-        $router->get('/@id:[0-9]+', [CategorieController::class, 'getCategory']);
-        $router->post('', [CategorieController::class, 'createCategory']);
-        $router->post('/@id:[0-9]+', [CategorieController::class, 'updateCategory']);
-        $router->delete('/@id:[0-9]+', [CategorieController::class, 'deleteCategory']);
-    });
 
     //==============ADMIN================//
     $router->group('/admin', function () use ($router) {
@@ -42,6 +36,30 @@ $router->group('', function (Router $router) {
             Flight::render('admin/login');
         });
     });
+=======
+	$router->group('/auth', function () use ($router) {
+		$router->get('/register', function () {
+			Flight::render('client/register');
+		});
+	});
+>>>>>>> Stashed changes
 
 
+
+	//==============ADMIN================//
+	$router->group('/admin', function () use ($router) {
+		$router->get('/', function () {
+			Flight::render('admin/login');
+		});
+		$router->get('/categories', function () {
+			Flight::render('admin/categories'); // points to views/admin/categories.php
+		});
+		$router->group('/categories', function () use ($router) {
+			$router->get('/list', [CategorieController::class, 'getAllCategories']);
+			$router->get('/@id:[0-9]+', [CategorieController::class, 'getCategory']);
+			$router->post('', [CategorieController::class, 'createCategory']);
+			$router->post('/@id:[0-9]+', [CategorieController::class, 'updateCategory']);
+			$router->delete('/@id:[0-9]+', [CategorieController::class, 'deleteCategory']);
+		});
+	});
 }, [SecurityHeadersMiddleware::class]);
