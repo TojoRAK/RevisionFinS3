@@ -14,13 +14,11 @@ class UserModel
         $this->pdo = $pdo;
     }
 
-    public function checkLoginClient($name, $pwd)
+    public function checkLoginClient($email, $pwd)
     {
-        $stmt = $this->pdo->prepare("SELECT password_hash FROM users WHERE name = ? LIMIT 1");
-        $stmt->execute([$name]);
+        $stmt = $this->pdo->prepare("SELECT password_hash FROM users WHERE email = ? LIMIT 1");
+        $stmt->execute([$email]);
         if ($row = $stmt->fetchColumn()) {
-            // $hash = password_hash($password, PASSWORD_DEFAULT);
-            // echo $hash;
             if (!password_verify($pwd, $row)) {
                 return false;
             }
