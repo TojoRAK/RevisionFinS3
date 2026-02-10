@@ -33,7 +33,7 @@
         if (!tbody) return;
         tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted-2 py-3"><span class="spinner-border spinner-border-sm me-2"></span>Chargement…</td></tr>`;
         try {
-            const { data } = await apiFetch('/categories');
+            const { data } = await apiFetch('/admin/categories/list');
             if (!data.ok || !data.data || !data.data.length) {
                 tbody.innerHTML = `<tr><td colspan="4" class="py-2"><div class="tt-empty"><div class="icon"><i class="bi bi-tags"></i></div><div class="fw-semibold mt-2">Aucune catégorie</div><div class="text-muted-2 small mt-1">Ajoutez votre première catégorie.</div></div></td></tr>`;
                 return;
@@ -71,7 +71,7 @@
         const modalCategoryEl   = document.getElementById('modalCategoryForm');
         const modalCategory     = modalCategoryEl ? new bootstrap.Modal(modalCategoryEl) : null;
 
-        // Reset to "Add" mode when modal opens without an edit triggering it
+        
         if (modalCategoryEl) {
             modalCategoryEl.addEventListener('show.bs.modal', () => {
                 if (!categoryIdInput.value) {
@@ -79,14 +79,14 @@
                     if (modalTitle) modalTitle.textContent = 'Ajouter une catégorie';
                 }
             });
-            // Clear id when modal closes so next open is fresh
+           
             modalCategoryEl.addEventListener('hidden.bs.modal', () => {
                 categoryIdInput.value = '';
                 categoryForm.reset();
             });
         }
 
-        // Form submit — create or update
+        
         if (categoryForm) {
             categoryForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -98,7 +98,7 @@
                 if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement…'; }
 
                 try {
-                    const url = id ? `/categories/${id}` : '/categories';
+                    const url = id ? `/admin/categories/${id}` : '/admin/categories';
                     const { data } = await apiFetch(url, { method: 'POST', body: { name } });
                     if (data.ok) {
                         toast(data.message, 'success');
@@ -116,7 +116,7 @@
             });
         }
 
-        // Edit button — set id, name, update title, show modal
+        
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('.edit-category-btn');
             if (!btn) return;
@@ -126,7 +126,7 @@
             modalCategory?.show();
         });
 
-        // Delete
+        
         const modalDeleteEl    = document.getElementById('modalConfirmDelete');
         const modalDelete      = modalDeleteEl ? new bootstrap.Modal(modalDeleteEl) : null;
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
@@ -145,7 +145,7 @@
                 confirmDeleteBtn.disabled = true;
                 confirmDeleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Suppression…';
                 try {
-                    const { data } = await apiFetch(`/categories/${deleteId}`, { method: 'DELETE' });
+                    const { data } = await apiFetch(`/admin/categories/${deleteId}`, { method: 'DELETE' });
                     if (data.ok) {
                         toast(data.message, 'success');
                         modalDelete?.hide();
