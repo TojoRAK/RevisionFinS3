@@ -50,10 +50,46 @@ class AuthClient
         } catch (Exception $e) {
             echo json_encode([
                 'ok' => false,
-                'errors' => $e->getMessage() 
+                'errors' => $e->getMessage()
             ]);
         }
     }
 
+
+    function validateInputAndLogin()
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        $input = [
+            'nom' => UserModel::post_trim('nom'),
+            'prenom' => UserModel::post_trim('prenom'),
+            'email' => UserModel::post_trim('email'),
+            'password' => $_POST['password'] ?? '',
+            'confirm_password' => $_POST['confirm_password'] ?? '',
+        ];
+        $model = new UserModel(Flight::db());
+        $result = $model->validateInput($input);
+        $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+        if ($isAjax) {
+            echo json_encode([
+                'ok' => $result['ok'],
+                'errors' => $result['errors'],
+                'values' => $result['values'],
+            ]);
+            return;
+        }
+
+        if ($result['ok']) {
+            $model->registerUser($input);
+            Flight::redirect('/');
+            return;
+        }
+
+        Flight::render('client/register', [
+            'errors' => $result['errors'],
+            'values' => $result['values'],
+        ]);
+    }
 
 }

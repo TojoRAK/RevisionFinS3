@@ -31,6 +31,7 @@ $router->group('', function (Router $router) {
 		$router->get('/register', function () {
 			Flight::render('client/register');
 		});
+        $router->post('/register' , [AuthClient::class , 'validateInputAndLogin']);
 	});
 
 
