@@ -27,11 +27,12 @@
           <h1 class="h4 mb-1">Connexion</h1>
           <div class="text-muted-2">Accède à tes échanges et propositions.</div>
         </div>
+        <span id="formStatus"></span>
 
-        <form class="needs-validation" novalidate>
+        <form class="needs-validation" id="loginForm" novalidate>
           <div class="mb-3">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control" required placeholder="ex: lucas@mail.com">
+            <input type="email" class="form-control" required placeholder="ex: lucas@mail.com" id="email" name="email">
             <div class="invalid-feedback">Email invalide.</div>
           </div>
 
@@ -41,7 +42,7 @@
               <a href="#" class="small text-muted-2" onclick="toast('Lien reset (simulé)', 'info')">Mot de passe oublié ?</a>
             </label>
             <div class="input-group">
-              <input type="password" class="form-control" required minlength="6" placeholder="••••••••">
+              <input type="password" class="form-control" required minlength="6" placeholder="••••••••" id="password" name="password">
               <button class="btn btn-tt-ghost" type="button" onclick="togglePwd(this)">
                 <i class="bi bi-eye"></i>
               </button>
@@ -57,7 +58,7 @@
             <span class="tt-chip"><i class="bi bi-shield-lock"></i> Sécurisé</span>
           </div>
 
-          <button class="btn btn-tt-primary w-100 py-2">Se connecter</button>
+          <input type="submit" class="btn btn-tt-primary w-100 py-2">Se connecter</button>
 
           <div class="text-center mt-3 text-muted-2 small">
             Pas de compte ? <a class="text-white" href="auth/register">Créer un compte</a>
@@ -71,12 +72,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/login.js"></script>
+  
   <script>
     function togglePwd(btn){
       const input = btn.parentElement.querySelector('input');
       input.type = input.type === 'password' ? 'text' : 'password';
       btn.innerHTML = input.type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
     }
+    
   </script>
 </body>
 </html>
