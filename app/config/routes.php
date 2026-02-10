@@ -10,7 +10,6 @@ use flight\net\Router;
  * @var Router $router
  * @var Engine $app
  */
-
 $router->group('', function (Router $router) {
 
     $router->get('/', function () {
@@ -25,7 +24,6 @@ $router->group('', function (Router $router) {
     });
 
     $router->group('/categories', function () use ($router) {
-
         $router->get('', [CategorieController::class, 'getAllCategories']);
         $router->get('/@id:[0-9]+', [CategorieController::class, 'getCategory']);
         $router->post('', [CategorieController::class, 'createCategory']);
