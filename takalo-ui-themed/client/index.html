@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,33 +10,53 @@
 </head>
 <body class="tt-page">
 
-  <nav class="navbar navbar-expand-lg tt-navbar sticky-top">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="./index.html">
-        <span class="badge badge-soft-info">TT</span><span class="fw-semibold">Takalo-takalo</span>
-      </a>
-      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
-        <span class="navbar-toggler-icon" style="filter: invert(1)"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="topNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-          <li class="nav-item"><a class="nav-link text-white" href="./index.html">Objets</a></li>
-          <li class="nav-item"><a class="nav-link text-white-50" href="./my_items.html">Mes objets</a></li>
-          <li class="nav-item"><a class="nav-link text-white-50" href="./offers.html">Échanges</a></li>
-          <li class="nav-item"><a class="nav-link text-white-50" href="../auth/login.html">Connexion</a></li>
-          <li class="nav-item ms-lg-2">
-            <button class="btn btn-tt-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalQuickPost">
-              <i class="bi bi-plus-circle me-1"></i>Ajouter
-            </button>
-          </li>
-        </ul>
+  <!-- components/header_client.html
+     Dynamic placeholders (Flight later):
+     - {{user.name}} / {{user.avatarUrl}} / {{isLoggedIn}}
+-->
+<nav class="navbar navbar-expand-lg tt-navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="../client/index.html">
+      <span class="tt-brand-badge fw-bold">TT</span>
+      <div class="d-flex flex-column lh-sm">
+        <span class="fw-semibold" style="color:var(--tt-text)">Takalo-takalo</span>
+        <span class="text-muted-2 small d-none d-md-inline">Plateforme d’échange d’objets</span>
       </div>
+    </a>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+      <span class="navbar-toggler-icon" style="filter: invert(.85)"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="topNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
+        <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/index.html">Objets</a></li>
+        <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/my_items.html">Mes objets</a></li>
+        <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/offers.html">Échanges</a></li>
+        <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/profile.html">Profil</a></li>
+
+        <li class="nav-item d-flex align-items-center gap-2 ms-lg-2">
+          <button class="btn btn-tt-ghost btn-tt-icon" data-tt-theme-toggle title="Basculer thème">
+            <i class="bi bi-sun"></i>
+          </button>
+
+          <button class="btn btn-tt-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalQuickPost">
+            <i class="bi bi-plus-circle me-1"></i>Ajouter
+          </button>
+
+          <a class="btn btn-tt-ghost btn-sm" href="../auth/login.html">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Connexion
+          </a>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
+
 
   <main class="tt-main">
     <div class="container py-4">
-      <div class="tt-surface p-3 p-md-4">
+      <div class="tt-hero p-3 p-md-4 mb-3">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
           <div>
             <h1 class="h4 mb-1">Objets disponibles</h1>
@@ -44,7 +64,7 @@
           </div>
           <div class="d-flex gap-2 flex-wrap">
             <div class="input-group" style="min-width: 260px;">
-              <span class="input-group-text bg-transparent border-opacity-25 text-white"><i class="bi bi-search"></i></span>
+              <span class="input-group-text bg-transparent" style="border-color:var(--tt-border); color:var(--tt-text)"><i class="bi bi-search"></i></span>
               <input class="form-control" placeholder="Rechercher un objet…">
             </div>
             <select class="form-select" style="min-width: 190px;">
@@ -57,9 +77,9 @@
             <button class="btn btn-tt-ghost" data-tt-action="filter">Filtrer</button>
           </div>
         </div>
+      </div>
 
-        <hr class="border-opacity-25 my-4">
-
+      <div class="tt-surface p-3 p-md-4">
         <div class="row g-3">
           <div class="col-12 col-md-6 col-lg-4">
             <div class="tt-card p-3 h-100">
@@ -73,7 +93,7 @@
               </div>
               <div class="d-flex gap-2 mt-3">
                 <a class="btn btn-tt-primary w-100" href="./item_detail.html"><i class="bi bi-eye me-1"></i>Voir</a>
-                <button class="btn btn-tt-ghost" data-tt-action="save"><i class="bi bi-bookmark"></i></button>
+                <button class="btn btn-tt-ghost btn-tt-icon" data-tt-action="save"><i class="bi bi-bookmark"></i></button>
               </div>
             </div>
           </div>
@@ -90,7 +110,7 @@
               </div>
               <div class="d-flex gap-2 mt-3">
                 <a class="btn btn-tt-primary w-100" href="./item_detail.html">Voir</a>
-                <button class="btn btn-tt-ghost" data-tt-action="save"><i class="bi bi-bookmark"></i></button>
+                <button class="btn btn-tt-ghost btn-tt-icon" data-tt-action="save"><i class="bi bi-bookmark"></i></button>
               </div>
             </div>
           </div>
@@ -107,7 +127,7 @@
               </div>
               <div class="d-flex gap-2 mt-3">
                 <a class="btn btn-tt-primary w-100" href="./item_detail.html">Voir</a>
-                <button class="btn btn-tt-ghost" data-tt-action="save"><i class="bi bi-bookmark"></i></button>
+                <button class="btn btn-tt-ghost btn-tt-icon" data-tt-action="save"><i class="bi bi-bookmark"></i></button>
               </div>
             </div>
           </div>
@@ -116,24 +136,42 @@
     </div>
   </main>
 
-  <footer class="tt-footer mt-4">
-    <div class="container py-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
-      <div class="text-muted-2 small">© <span id="year"></span> Takalo-takalo</div>
-      <div class="text-muted-2 small">Frontoffice • Bootstrap 5</div>
+  <!-- components/footer.html -->
+<footer class="tt-footer mt-4">
+  <div class="container py-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-6">
+        <div class="d-flex align-items-center gap-2">
+          <span class="tt-brand-badge fw-bold">TT</span>
+          <div class="lh-sm">
+            <div class="fw-semibold" style="color:var(--tt-text)">Takalo-takalo</div>
+            <div class="text-muted-2 small">Échange simple • UI moderne • Responsive</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 text-md-end">
+        <div class="d-flex gap-3 justify-content-md-end flex-wrap">
+          <a href="../client/index.html" class="text-muted-2 small">Objets</a>
+          <a href="../client/offers.html" class="text-muted-2 small">Échanges</a>
+          <a href="../admin/login.html" class="text-muted-2 small">Admin</a>
+          <a href="#" class="text-muted-2 small" onclick="toast('Lien CGU (démo)', 'info')">CGU</a>
+        </div>
+        <div class="text-muted-2 small mt-2">© <span id="year"></span> Takalo-takalo</div>
+      </div>
     </div>
-  </footer>
-  <script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+  </div>
+</footer>
+<script>document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());</script>
 
-  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="ttToastContainer"></div>
-
-  <!-- Quick post modal -->
-  <!-- Quick post (demo) -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="ttToastContainer"></div>
+<!-- components/modals.html -->
 <div class="modal fade" id="modalQuickPost" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content tt-card">
       <div class="modal-header border-0">
         <h5 class="modal-title">Ajouter un objet (démo)</h5>
-        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form class="modal-body needs-validation" novalidate>
         <div class="mb-3">
@@ -159,6 +197,28 @@
         </div>
         <button class="btn btn-tt-primary w-100">Enregistrer (simulé)</button>
       </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalConfirmDelete" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content tt-card">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Confirmer la suppression</h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="tt-empty">
+          <div class="icon"><i class="bi bi-exclamation-triangle"></i></div>
+          <div class="fw-semibold mt-2">Cette action est irréversible.</div>
+          <div class="text-muted-2 small mt-1">Suppression simulée (pas de backend).</div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-tt-ghost" data-bs-dismiss="modal">Annuler</button>
+        <button class="btn btn-danger" data-tt-action="delete-confirm">Supprimer</button>
+      </div>
     </div>
   </div>
 </div>
