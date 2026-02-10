@@ -1,35 +1,30 @@
 <?php
 
-use app\controllers\ApiExampleController;
-use app\controllers\ProduitController;
+use Flight;
+use app\controllers\CategorieController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
 
-/** 
- * @var Router $router 
+/**
+ * @var Router $router
  * @var Engine $app
  */
 
-// This wraps all routes in the group with the SecurityHeadersMiddleware
-$router->group('', function(Router $router) use ($app) {
+$router->group('', function (Router $router) {
 
-	$router->get('/', function() use ($app) {
-		$app->render('welcome', [ 'message' => 'You are gonna do great things!' ]);
-	});
+    $router->get('/', function () {
+        Flight::render('login');
+    });
 
-	$router->get('/hello-world/@name', function($name) {
-		echo '<h1>Hello world! Oh hey '.$name.'!</h1>';
-	});
-	
-	$router->group('/ecomdb', function() use ($router){
-		$router->get('/index',[ ProduitController::class, 'listProduits']);
-		$router->get('/index/@id:[0-9]',[ ProduitController::class, 'listProduit']);
-	});
-	$router->group('/api', function() use ($router) {
-		$router->get('/users', [ ApiExampleController::class, 'getUsers' ]);
-		$router->get('/users/@id:[0-9]', [ ApiExampleController::class, 'getUser' ]);
-		$router->post('/users/@id:[0-9]', [ ApiExampleController::class, 'updateUser' ]);
-	});
-	
-}, [ SecurityHeadersMiddleware::class ]);
+    $router->group('/categories', function () use ($router) {
+
+        $router->get('', [CategorieController::class, 'getAllCategories']);
+        $router->get('/@id:[0-9]+', [CategorieController::class, 'getCategory']);
+        $router->post('', [CategorieController::class, 'createCategory']);
+        $router->post('/@id:[0-9]+', [CategorieController::class, 'updateCategory']);
+        $router->delete('/@id:[0-9]+', [CategorieController::class, 'deleteCategory']);
+
+    });
+
+}, [SecurityHeadersMiddleware::class]);
