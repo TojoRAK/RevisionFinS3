@@ -1,6 +1,6 @@
 <?php
 
-use Flight;
+// use Flight;
 use app\controllers\CategorieController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
@@ -16,10 +16,12 @@ $router->group('', function (Router $router) {
     $router->get('/', function () {
         Flight::render('client/login');
     });
-    $router->group('/auth' , function () use ($router) { 
-        $router->get('/register' , function () {
+
+
+    $router->group('/auth', function () use ($router) {
+        $router->get('/register', function () {
             Flight::render('client/register');
-        })    ;
+        });
     });
 
     $router->group('/categories', function () use ($router) {
@@ -29,7 +31,14 @@ $router->group('', function (Router $router) {
         $router->post('', [CategorieController::class, 'createCategory']);
         $router->post('/@id:[0-9]+', [CategorieController::class, 'updateCategory']);
         $router->delete('/@id:[0-9]+', [CategorieController::class, 'deleteCategory']);
-
     });
+
+    //==============ADMIN================//
+    $router->group('/admin', function () use ($router) {
+        $router->get('/', function () {
+            Flight::render('admin/login');
+        });
+    });
+
 
 }, [SecurityHeadersMiddleware::class]);
