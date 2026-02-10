@@ -14,7 +14,7 @@ use flight\net\Router;
 $router->group('', function (Router $router) {
 
     $router->get('/', function () {
-        Flight::render('login');
+        Flight::render('client/login');
     });
 
     $router->group('/categories', function () use ($router) {
