@@ -10,26 +10,28 @@ use flight\net\Router;
  * @var Router $router
  * @var Engine $app
  */
-
 $router->group('', function (Router $router) {
 
     $router->get('/', function () {
         Flight::render('client/login');
     });
-    $router->group('/auth' , function () use ($router) { 
-        $router->get('/register' , function () {
+    
+    $router->group('/auth', function () use ($router) { 
+        $router->get('/register', function () {
             Flight::render('client/register');
-        })    ;
+        });
+    });
+    
+    $router->get('/admin/categories', function () {
+        Flight::render('admin/categories'); // points to views/admin/categories.php
     });
 
     $router->group('/categories', function () use ($router) {
-
         $router->get('', [CategorieController::class, 'getAllCategories']);
         $router->get('/@id:[0-9]+', [CategorieController::class, 'getCategory']);
         $router->post('', [CategorieController::class, 'createCategory']);
         $router->post('/@id:[0-9]+', [CategorieController::class, 'updateCategory']);
         $router->delete('/@id:[0-9]+', [CategorieController::class, 'deleteCategory']);
-
     });
 
 }, [SecurityHeadersMiddleware::class]);
