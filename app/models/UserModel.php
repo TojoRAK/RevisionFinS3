@@ -26,4 +26,17 @@ class UserModel
         return $stmt->fetchColumn();
     }
 
+    public function checkLoginAdmin($email, $pwd)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = ? and role=\"ADMIN\" LIMIT 1");
+        $stmt->execute([$email]);
+        $user = $stmt->fetchColumn();
+        if($user) {
+            if (!password_verify($pwd, $user['password_hash'])) {
+                return false;
+            }
+        }
+        return $user;
+    }
+
 }
