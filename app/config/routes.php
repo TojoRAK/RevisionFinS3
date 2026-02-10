@@ -16,6 +16,11 @@ $router->group('', function (Router $router) {
     $router->get('/', function () {
         Flight::render('client/login');
     });
+    $router->group('/auth' , function () use ($router) { 
+        $router->get('/register' , function () {
+            Flight::render('client/register');
+        })    ;
+    });
 
     $router->group('/categories', function () use ($router) {
 

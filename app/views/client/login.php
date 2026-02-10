@@ -17,7 +17,7 @@
         <span class="badge badge-soft-info">TT</span><span class="fw-semibold">Takalo-takalo</span>
       </a>
       <div class="d-flex gap-2">
-        <a class="btn btn-tt-ghost btn-sm" href="../auth/register.html">Créer un compte</a>
+        <a class="btn btn-tt-ghost btn-sm" href="auth/register">Créer un compte</a>
       </div>
     </nav>
 
@@ -60,7 +60,7 @@
           <button class="btn btn-tt-primary w-100 py-2">Se connecter</button>
 
           <div class="text-center mt-3 text-muted-2 small">
-            Pas de compte ? <a class="text-white" href="../auth/register.html">Créer un compte</a>
+            Pas de compte ? <a class="text-white" href="auth/register">Créer un compte</a>
           </div>
         </form>
       </div>
