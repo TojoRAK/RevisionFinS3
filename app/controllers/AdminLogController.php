@@ -19,41 +19,47 @@ class AdminLogController
 
     public function doLogin()
     {
-        header('Content-Type: application/json; charset=utf-8');
-        $email = trim($_POST['email']);
-        $pwd = trim($_POST['password']);
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $pwd   = isset($_POST['password']) ? trim($_POST['password']) : '';
 
         try {
-
-            $model = new UserModel(Flight::db());
-
-            $errors = "";
-            $user = $model->checkLoginClient($email, $pwd);
-
-            if (!$user) {
-                $errors = "Mot de passe incorrect";
-            }
-
-            if (!empty($errors)) {
-                echo json_encode([
-                    'ok' => false,
-                    'errors' => $errors
-                ]);
+            if ($email === '' || $pwd === '') {
+                $_SESSION['flash_error'] = "Veuillez remplir l'email et le mot de passe.";
+                Flight::redirect('/admin/login');
                 return;
             }
-            echo json_encode(
-                [
-                    'ok' => true,
-                ]
-            );
 
+            $model = new UserModel(Flight::db());
+            $user  = $model->checkLoginAdmin($email, $pwd);
+
+            if (!$user) {
+                $_SESSION['flash_error'] = "Email ou mot de passe incorrect.";
+                Flight::redirect('/admin/login');
+                return;
+            }
+
+            // (Optionnel) sécurité : régénérer l'ID de session après login
+            session_regenerate_id(true);
+
+            $_SESSION['admin'] = [
+                'id'    => $user['id'],
+                'name'  => ($user['name'] ?? 'Admin'),
+                'role'  => ($user['role'] ?? 'ADMIN'),
+                'email' => ($user['email'] ?? $email),
+            ];
+
+            unset($_SESSION['flash_error']);
+
+            Flight::redirect('/admin/dash');
+            return;
         } catch (Exception $e) {
-            echo json_encode([
-                'ok' => false,
-                'errors' => $e->getMessage()
-            ]);
+            $_SESSION['flash_error'] = "Erreur serveur : " . $e->getMessage();
+            Flight::redirect('/admin/login');
+            return;
         }
     }
-
-
 }
