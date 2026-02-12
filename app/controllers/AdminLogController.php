@@ -53,7 +53,7 @@ class AdminLogController
 
             unset($_SESSION['flash_error']);
 
-            Flight::redirect('/admin/categories');
+            Flight::redirect('/admin/dash');
             return;
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Erreur serveur : " . $e->getMessage();

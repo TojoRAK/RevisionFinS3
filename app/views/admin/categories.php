@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-if (isset($_SESSION['user'])) {
+if (isset($_SESSION['admin'])) {
     header('Location: /');
     exit;
 }
@@ -22,14 +22,14 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
 
     <nav class="navbar tt-navbar sticky-top">
         <div class="container">
-            <a class="navbar-brand text-white d-flex align-items-center gap-2" href="/admin/dashboard">
+            <a class="navbar-brand text-white d-flex align-items-center gap-2" href="/admin/dash">
                 <span class="badge badge-soft-info">TT</span>
                 <span class="fw-semibold">Takalo-takalo</span>
                 <span class="text-muted-2 small">Admin</span>
             </a>
             <div class="d-flex gap-2">
                 <a class="btn btn-tt-ghost btn-sm" href="/">Frontoffice</a>
-                <a class="btn btn-outline-light btn-sm" href="/">Déconnexion</a>
+                <a class="btn btn-outline-light btn-sm" href="/admin/logout">Déconnexion</a>
             </div>
         </div>
     </nav>
@@ -47,13 +47,13 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
                         <span class="badge badge-soft">v1 UI</span>
                     </div>
                     <div class="d-grid gap-2">
-                        <a class="btn btn-tt-ghost text-start" href="/admin/dashboard">
+                        <a class="btn btn-tt-ghost text-start" href="/admin/dash">
                             <i class="bi bi-speedometer2 me-2"></i>Dashboard
                         </a>
                         <a class="btn btn-tt-ghost text-start active" href="/admin/categories">
                             <i class="bi bi-tags me-2"></i>Catégories
                         </a>
-                        <a class="btn btn-tt-ghost text-start" href="/client">
+                        <a class="btn btn-tt-ghost text-start" href="/">
                             <i class="bi bi-box-seam me-2"></i>Voir frontoffice
                         </a>
                     </div>
@@ -63,7 +63,7 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
                             <span>Connecté</span>
                             <span class="badge badge-soft-success">Admin</span>
                         </div>
-                        <a href="/" class="btn btn-sm btn-outline-light w-100">
+                        <a href="/admin/logout" class="btn btn-sm btn-outline-light w-100">
                             <i class="bi bi-box-arrow-right me-1"></i>Déconnexion
                         </a>
                     </div>

@@ -45,9 +45,16 @@ $router->group('', function (Router $router) {
 
 		$router->post('/login', [AdminLogController::class, 'doLogin']);
 
+		$router->get('/logout', [AdminLogController::class, 'doLogout']);
+
 		$router->get('/', function () {
 			Flight::redirect('/admin/login');
 		});
+
+		$router->get('/dash', function () {
+			Flight::render('admin/dashboard');
+		});
+
 		$router->get('/categories', function () {
 			Flight::render('admin/categories'); // points to views/admin/categories.php
 		});
@@ -60,3 +67,25 @@ $router->group('', function (Router $router) {
 		});
 	});
 }, [SecurityHeadersMiddleware::class]);
+
+
+function requireAdmin(): void
+{
+	if (session_status() !== PHP_SESSION_ACTIVE) {
+		session_start();
+	}
+
+	// Pas connecté
+	if (!isset($_SESSION['admin'])) {
+		$_SESSION['flash_error'] = "Veuillez vous connecter.";
+		Flight::redirect('/admin/login');
+		exit;
+	}
+
+	// if (($_SESSION['admin']['role'] ?? '') !== 'ADMIN') {
+	//     unset($_SESSION['admin']);
+	//     $_SESSION['flash_error'] = "Accès refusé.";
+	//     Flight::redirect('/admin/login');
+	//     exit;
+	// }
+}
