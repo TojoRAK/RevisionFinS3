@@ -53,7 +53,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" required minlength="6" placeholder="••••••••">
+            <input type="password" class="form-control" required minlength="6" placeholder="admin1234">
             <div class="invalid-feedback">Minimum 6 caractères.</div>
           </div>
           <button class="btn btn-tt-primary w-100 py-2">Se connecter (simulé)</button>

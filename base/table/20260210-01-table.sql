@@ -160,11 +160,11 @@ CREATE TABLE histo_propietaire (
 -- =========================
 
 -- Users (password_hash = placeholders)
-INSERT INTO users (name, role, password_hash) VALUES
-('Admin', 'ADMIN', '$2y$10$adminhash_placeholder___________________________'),
-('Aina',  'USER',  '$2y$10$ainahash_placeholder____________________________'),
-('Koto',  'USER',  '$2y$10$kotohash_placeholder____________________________'),
-('Mina',  'USER',  '$2y$10$minahash_placeholder____________________________');
+INSERT INTO users (email, name, role, password_hash) VALUES
+('admin@takalo.tld','Admin', 'ADMIN', '$2y$12$wXj6MQUbuDFDU4B2/H6mHe7QHKm4mqQmYnSFaDwEUgRI8UhgY0Hr6'),
+('testA@mail.com','Aina',  'USER',  '$2y$10$ainahash_placeholder____________________________'),
+('testK@mail.com','Koto',  'USER',  '$2y$10$kotohash_placeholder____________________________'),
+('testM@mail.com','Mina',  'USER',  '$2y$10$minahash_placeholder____________________________');
 
 -- Categories
 INSERT INTO categories (name) VALUES
