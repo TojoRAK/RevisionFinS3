@@ -42,7 +42,6 @@ class AdminLogController
                 return;
             }
 
-            // (Optionnel) sécurité : régénérer l'ID de session après login
             session_regenerate_id(true);
 
             $_SESSION['admin'] = [
@@ -54,12 +53,28 @@ class AdminLogController
 
             unset($_SESSION['flash_error']);
 
-            Flight::redirect('/admin/dash');
+            Flight::redirect('/admin/categories');
             return;
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Erreur serveur : " . $e->getMessage();
             Flight::redirect('/admin/login');
             return;
         }
+    }
+
+    public function doLogout()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        unset($_SESSION['admin']);
+
+        session_destroy();
+
+        session_regenerate_id(true);
+
+        Flight::redirect('/admin/login');
+        return;
     }
 }

@@ -35,7 +35,7 @@ class UserModel
     {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = ? and role=\"ADMIN\" LIMIT 1");
         $stmt->execute([$email]);
-        $user = $stmt->fetchColumn();
+        $user = $stmt->fetch();
         if ($user) {
             if (!password_verify($pwd, $user['password_hash'])) {
                 return false;
