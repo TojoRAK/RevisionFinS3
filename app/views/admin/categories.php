@@ -28,7 +28,7 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
                 <span class="text-muted-2 small">Admin</span>
             </a>
             <div class="d-flex gap-2">
-                <a class="btn btn-tt-ghost btn-sm" href="/client">Frontoffice</a>
+                <a class="btn btn-tt-ghost btn-sm" href="/">Frontoffice</a>
                 <a class="btn btn-outline-light btn-sm" href="/">Déconnexion</a>
             </div>
         </div>

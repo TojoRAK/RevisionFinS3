@@ -1,6 +1,8 @@
 <?php
 
 // use Flight;
+
+use app\controllers\AdminLogController;
 use app\controllers\CategorieController;
 use app\controllers\PropositionController;
 
@@ -36,14 +38,20 @@ $router->group('', function (Router $router) {
 		$router->get('/register', function () {
 			Flight::render('client/register');
 		});
-        $router->post('/register' , [AuthClient::class , 'validateInputAndLogin']);
+		$router->post('/register', [AuthClient::class, 'validateInputAndLogin']);
 	});
 
 
 	//==============ADMIN================//
 	$router->group('/admin', function () use ($router) {
-		$router->get('/', function () {
+		$router->get('/login', function () {
 			Flight::render('admin/login');
+		});
+
+		$router->post('/login', [AdminLogController::class, 'doLogin']);
+
+		$router->get('/', function () {
+			Flight::redirect('/admin/login');
 		});
 		$router->get('/categories', function () {
 			Flight::render('admin/categories'); // points to views/admin/categories.php

@@ -82,10 +82,11 @@
         event.preventDefault();
         event.stopPropagation();
         toast("Veuillez corriger les erreurs du formulaire.", "warning");
-      } else {
-        event.preventDefault();
-        toast("Action simulée (pas de backend).", "info");
-      }
+      } 
+      // else {
+      //   event.preventDefault();
+      //   // toast("Action simulée (pas de backend).", "info");
+      // }
       form.classList.add('was-validated');
     }, false);
   });
