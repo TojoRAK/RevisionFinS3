@@ -16,7 +16,7 @@
      Dynamic placeholders (Flight later):
      - {{user.name}} / {{user.avatarUrl}} / {{isLoggedIn}}
 -->
-    <?php include('../inc/header') ?>
+    <?php include('inc/header.php') ?>
 
     <main class="tt-main">
         <div class="container py-4">
@@ -126,7 +126,7 @@
     </main>
 
     <!-- components/footer.html -->
-    <?php include('../inc/footer.php') ?>
+    <?php include('inc/footer.php') ?>
     <script>document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());</script>
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3" id="ttToastContainer"></div>
