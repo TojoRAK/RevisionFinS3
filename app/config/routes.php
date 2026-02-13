@@ -32,9 +32,14 @@ $router->group('', function (Router $router) {
 
 	$router->group('/objets', function () use ($router) {
 		$router->get('/list', [ObjetController::class, 'list']);
+		$router->get('/@id:[0-9]+', [ObjetController::class, 'getOne']);
 		$router->post('', [ObjetController::class, 'create']);
 		$router->post('/@id:[0-9]+', [ObjetController::class, 'update']);
 		$router->delete('/@id:[0-9]+', [ObjetController::class, 'delete']);
+
+		$router->get('/@id:[0-9]+/images', [ObjetController::class, 'getImages']);
+        $router->delete('/images/@imageId:[0-9]+', [ObjetController::class, 'deleteImage']);
+        $router->post('/images/@imageId:[0-9]+/set-main/@objetId:[0-9]+', [ObjetController::class, 'setMainImage']);
 	});
 
 
