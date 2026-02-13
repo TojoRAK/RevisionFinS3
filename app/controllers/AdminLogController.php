@@ -42,7 +42,7 @@ class AdminLogController
                 return;
             }
 
-            session_regenerate_id(true);
+            // session_regenerate_id(true);
 
             $_SESSION['admin'] = [
                 'id'    => $user['id'],
@@ -72,7 +72,7 @@ class AdminLogController
 
         session_destroy();
 
-        session_regenerate_id(true);
+        // session_regenerate_id(true);
 
         Flight::redirect('/admin/login');
         return;

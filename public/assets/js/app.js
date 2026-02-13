@@ -120,10 +120,10 @@
   });
 
   // Demo actions
-  document.querySelectorAll('[data-tt-action]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const action = btn.getAttribute('data-tt-action');
-      toast(`Action: ${action} (simulée)`, "info");
-    });
-  });
+  // document.querySelectorAll('[data-tt-action]').forEach((btn) => {
+  //   btn.addEventListener('click', () => {
+  //     const action = btn.getAttribute('data-tt-action');
+  //     toast(`Action: ${action} (simulée)`, "info");
+  //   });
+  // });
 })();
