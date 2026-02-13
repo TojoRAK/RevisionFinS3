@@ -134,7 +134,7 @@
                 <textarea class="form-control" id="offerMessage" rows="3" placeholder="Proposition, détails, conditions…"></textarea>
 
                 <div class="d-flex gap-2 mt-3">
-                  <button class="btn btn-tt-primary w-100" type="submit">Envoyer</button>
+                  <button class="btn btn-tt-primary w-100" type="submit" >Envoyer</button>
                   <button class="btn btn-tt-ghost" type="button" data-bs-dismiss="modal">Annuler</button>
                 </div>
               </div>
@@ -152,6 +152,7 @@
   <div class="toast-container position-fixed bottom-0 end-0 p-3" id="ttToastContainer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/app.js"></script>
   <script src="../assets/js/detail.js"></script>
 </body>
 </html>

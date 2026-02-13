@@ -93,10 +93,9 @@
                                                 style="object-fit:cover;border-radius:12px;border:1px solid var(--tt-border)"
                                                 alt="">
                                             <div>
-                                                <div class="fw-semibold">Demande pour : <?= $prop['offered_title'] ?></div>
-                                                <div class="text-muted-2 small">Proposé : <?= $prop['wanted_title'] ?> • par
-                                                    <span class="fw-semibold"
-                                                        style="color:var(--tt-text)"><?= $prop['owner_name'] ?></span>
+                                                <div class="fw-semibold">Offre envoyée <?= $prop['offered_title'] ?></div>
+                                                <div class="text-muted-2 small">Pour : <?= $prop['wanted_title'] ?> • à <span class="fw-semibold" style="color:var(--tt-text)"><?= $prop['owner_name'] ?></span>
+                                                    
                                                 </div>
                                                 <div class="mt-2 d-flex gap-2 flex-wrap">
                                                     <span class="badge badge-soft-warning"><?= $prop['status'] ?></span>
@@ -106,7 +105,7 @@
                                         </div>
                                         <div class="d-flex gap-2 align-self-md-center">
                                             <?php if ($prop['status'] == 'PENDING') { ?>
-                                                <button class="btn btn-outline-danger" data-tt-action="cancel">Annuler</button>
+                                                <button class="btn btn-outline-danger" data-tt-action="cancel" data-proposition-id="<?= $prop['id'] ?>">Annuler</button>
                                             <?php } ?>
                                         </div>
                                     </div>
