@@ -35,4 +35,21 @@ class ObjetController
             'objet' => $objet
         ]);
     }
+
+    public function myObjets()
+    {
+        if (!isset($_SESSION['user'])) {        //mbola amboariko 
+            Flight::redirect('/');
+            return;
+        }
+
+        $userId = $_SESSION['user']['id'];
+
+        $model = new \app\models\ObjetModel(Flight::db());
+        $objets = $model->getObjetsByOwner($userId);
+
+        Flight::render('client/my_items', [
+            'objets' => $objets
+        ]);
+    }
 }

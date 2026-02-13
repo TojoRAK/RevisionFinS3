@@ -26,6 +26,9 @@ $router->group('', function (Router $router) {
 
 	$router->get('/objet/@id:[0-9]+', [ObjetController::class, 'show']);
 
+	$router->get('/my-objets', [ObjetController::class, 'myObjets']);
+
+
     $router->group('/auth', function () use ($router) {
         $router->get('/register', function () {
             Flight::render('client/register');
