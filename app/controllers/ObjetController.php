@@ -27,7 +27,7 @@ class ObjetController
             'categories' => $categories
         ]);
     }
-
+//
     public function show($id)
     {
         if (session_status() === PHP_SESSION_NONE) {

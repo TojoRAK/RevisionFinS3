@@ -271,7 +271,7 @@
             modalTitle.textContent = 'Ajouter un objet';
         }
     }
-
+//
     /**
      * Éditer un objet
      */
