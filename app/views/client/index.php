@@ -24,18 +24,18 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2 flex-wrap">
-                        <form action="" method="get">
+                        <form action="" method="get" id="filterForm">
                             <div class="input-group" style="min-width: 260px;">
                                 <span class="input-group-text bg-transparent"
                                     style="border-color:var(--tt-border); color:var(--tt-text)">
                                     <i class="bi bi-search"></i>
                                 </span>
-                                <input class="form-control" placeholder="Rechercher un objet…">
+                                <input class="form-control" placeholder="Rechercher un objet…" id="titre" name="title" value="<?= htmlspecialchars($_GET['title'] ?? '') ?>">
                             </div>
-                            <select class="form-select" name="category_id">
+                            <select class="form-select" name="category_id" id="category_id">
                                 <option value="">Toutes catégories</option>
                                 <?php foreach ($categories as $cat): ?>
-                                    <option value="<?= $cat['id'] ?>">
+                                    <option value="<?= $cat['id'] ?>" <?= ((string)($cat['id']) === (string)($_GET['category_id'] ?? '')) ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($cat['name']) ?>
                                     </option>
                                 <?php endforeach; ?>

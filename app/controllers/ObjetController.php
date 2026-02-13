@@ -16,7 +16,15 @@ class ObjetController
 
         $userId = $_SESSION['user']['id'] ?? null;
         $objetModel = new ObjetModel(Flight::db());
-        $objets = $objetModel->getAllObjectsExceptUser($userId);
+
+        $title = trim((string) ($_GET['title'] ?? ''));
+        $categoryId = (int) ($_GET['category_id'] ?? 0);
+
+        if ($title !== '' || $categoryId > 0) {
+            $objets = $objetModel->getAvailableObjectsFiltered($userId, $title, $categoryId);
+        } else {
+            $objets = $objetModel->getAllObjectsExceptUser($userId);
+        }
 
         // Get categories
         $categorieModel = new CategorieModel(Flight::db());
@@ -27,7 +35,7 @@ class ObjetController
             'categories' => $categories
         ]);
     }
-//
+    //
     public function show($id)
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -76,6 +84,26 @@ class ObjetController
         ]);
     }
 
+    public function filter()
+    {
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $model = new ObjetModel(Flight::db());
+        $userId = $_SESSION['user']['id'] ?? null;
+
+        $title = trim((string) ($_GET['title'] ?? ''));
+        $category = (int) ($_GET['category_id'] ?? 0);
+        $data = $model->getAvailableObjectsFiltered($userId, $title, $category);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'ok' => true,
+            'data' => $data
+        ]);
+    }
     public function list()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -93,7 +121,7 @@ class ObjetController
 
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
-            'ok'   => true,
+            'ok' => true,
             'data' => $data
         ]);
     }
@@ -133,7 +161,7 @@ class ObjetController
 
         try {
             $model = new ObjetModel(Flight::db());
-            
+
             // Get POST data
             $input = [
                 'title' => $_POST['title'] ?? '',
@@ -142,7 +170,7 @@ class ObjetController
                 'category_id' => $_POST['category_id'] ?? 0,
                 'owner_user_id' => $_SESSION['user']['id']
             ];
-            
+
             // Create the object
             $objetId = $model->createObject($input);
 
@@ -152,8 +180,8 @@ class ObjetController
             }
 
             Flight::json([
-                'ok' => true, 
-                'message' => 'Objet ajouté avec succès', 
+                'ok' => true,
+                'message' => 'Objet ajouté avec succès',
                 'objet_id' => $objetId,
                 'images_uploaded' => $uploadedCount ?? 0
             ]);
@@ -175,7 +203,7 @@ class ObjetController
 
         try {
             $model = new ObjetModel(Flight::db());
-            
+
             // Get POST data
             $input = [
                 'title' => $_POST['title'] ?? '',
@@ -183,7 +211,7 @@ class ObjetController
                 'estimated_value' => $_POST['estimated_value'] ?? 0,
                 'category_id' => $_POST['category_id'] ?? 0
             ];
-            
+
             $model->updateObject($id, $input);
 
             // Handle new image uploads if any
@@ -192,7 +220,7 @@ class ObjetController
             }
 
             Flight::json([
-                'ok' => true, 
+                'ok' => true,
                 'message' => 'Objet mis à jour avec succès',
                 'images_uploaded' => $uploadedCount ?? 0
             ]);
@@ -227,12 +255,12 @@ class ObjetController
         }
     }
 
-   
+
     private function handleImageUploads($objetId, $files)
     {
         $imageModel = new ObjetImageModel(Flight::db());
         $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/objets/';
-        
+
         // Create directory if it doesn't exist
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
@@ -242,7 +270,7 @@ class ObjetController
         $maxSize = 5 * 1024 * 1024; // 5MB
 
         $uploadedCount = 0;
-        
+
         // Check if files is an array or single file
         if (is_array($files['name'])) {
             // Multiple files
@@ -276,10 +304,10 @@ class ObjetController
                 if (move_uploaded_file($files['tmp_name'][$i], $filePath)) {
                     // Save to database
                     $relativePath = '/uploads/objets/' . $filename;
-                    
+
                     // First image is main if no main image exists
                     $isMain = ($uploadedCount === 0 && $imageModel->getImageCount($objetId) === 0) ? 1 : 0;
-                    
+
                     $imageModel->addImage($objetId, $relativePath, $isMain);
                     $uploadedCount++;
                 }
@@ -321,7 +349,7 @@ class ObjetController
         Flight::json(['ok' => true, 'data' => $images]);
     }
 
-  
+
     public function deleteImage($imageId)
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -339,7 +367,7 @@ class ObjetController
         Flight::json(['ok' => $result, 'message' => $result ? 'Image supprimée' : 'Erreur']);
     }
 
-  
+
     public function setMainImage($imageId, $objetId)
     {
         if (session_status() === PHP_SESSION_NONE) {

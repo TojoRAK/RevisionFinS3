@@ -64,6 +64,11 @@ $router->group('', function (Router $router) {
 			requireAuth();
 			(new ObjetController())->list();
 		});
+		$router->get('/list/filter', function () {
+			requireAuth();
+			(new ObjetController())->filter();
+
+		});
 
 		$router->get('/@id:[0-9]+', function ($id) {
 			requireAuth();

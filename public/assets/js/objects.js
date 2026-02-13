@@ -6,6 +6,8 @@
     let modal = null;
     let deleteModal = null;
     let deleteId = null;
+    const filterForm = document.getElementById("filterForm");
+
 
     /**
      * Helper pour les requêtes API (JSON)
@@ -100,6 +102,26 @@
     /**
      * Charger les objets de l'utilisateur
      */
+    async function filtrer() {
+    const params = new URLSearchParams(new FormData(filterForm));
+    
+    try {
+        const response = await fetch(`/objets/list/filter?${params.toString()}`);
+        const res = await response.json();
+
+        if (!res.ok || !res.data.length) {
+            displayEmpty();
+            return;
+        }
+
+        objectsData = res.data;
+        displayObjects(res.data);
+
+    } catch (error) {
+        console.error('Erreur chargement objets:', error);
+    }
+}
+
     async function loadObjects() {
         const tbody = document.getElementById('objectsTableBody');
         if (!tbody) return;
@@ -183,10 +205,10 @@
     function setupImagePreview() {
         const fileInput = document.getElementById('objectImages');
         const previewGrid = document.getElementById('previewGrid');
-        
+
         if (!fileInput || !previewGrid) return;
 
-        fileInput.addEventListener('change', function(e) {
+        fileInput.addEventListener('change', function (e) {
             selectedFiles = Array.from(e.target.files);
             displayImagePreviews(selectedFiles, previewGrid);
         });
@@ -206,7 +228,7 @@
         files.slice(0, 8).forEach((file, index) => {
             const reader = new FileReader();
 
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const col = document.createElement('div');
                 col.className = 'col-6 col-md-3';
                 col.innerHTML = `
@@ -255,12 +277,12 @@
 
         selectedFiles = [];
         document.getElementById('objectId').value = '';
-        
+
         const fileInput = document.getElementById('objectImages');
         if (fileInput) {
             fileInput.value = '';
         }
-        
+
         const previewGrid = document.getElementById('previewGrid');
         if (previewGrid) {
             previewGrid.innerHTML = '<div class="text-muted-2 small">Aperçu des photos…</div>';
@@ -271,7 +293,7 @@
             modalTitle.textContent = 'Ajouter un objet';
         }
     }
-//
+    //
     /**
      * Éditer un objet
      */
@@ -403,10 +425,12 @@
             deleteId = null;
         }
     }
-
-    /**
-     * Initialisation au chargement de la page
-     */
+    if (filterForm) {
+        filterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            filtrer();
+        });
+    }
     document.addEventListener('DOMContentLoaded', () => {
         // Initialiser les modals
         const modalEl = document.getElementById('modalItemForm');
@@ -417,13 +441,16 @@
 
         // Charger les données
         loadCategories();
-        loadObjects();
+        if (!window.location.search.includes("?")) {
+            loadObjects();
+
+        }
 
         // Setup image preview
         setupImagePreview();
 
         // Reset form when modal opens (for "Add" mode)
-        modalEl?.addEventListener('show.bs.modal', function(e) {
+        modalEl?.addEventListener('show.bs.modal', function (e) {
             // Si ce n'est pas un bouton edit qui a déclenché le modal
             if (!e.relatedTarget || !e.relatedTarget.classList.contains('edit-btn')) {
                 resetForm();
