@@ -46,6 +46,8 @@ class AuthClient
                     'ok' => true,
                 ]
             );
+            // session_start();
+            $_SESSION['user'] = $user;
 
         } catch (Exception $e) {
             echo json_encode([
