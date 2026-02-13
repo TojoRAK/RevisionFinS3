@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 
 use Flight;
@@ -10,12 +9,16 @@ class ObjetController
 {
     public function index()
     {
-        $userId = $_SESSION['user']['id'] ?? null;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-        $objetModel = new \app\models\ObjetModel(Flight::db());
+        $userId = $_SESSION['user']['id'] ?? null;
+        $objetModel = new ObjetModel(Flight::db());
         $objets = $objetModel->getAllObjectsExceptUser($userId);
+
         // Get categories
-        $categorieModel = new \app\models\CategorieModel(Flight::db());
+        $categorieModel = new CategorieModel(Flight::db());
         $categories = $categorieModel->getAllCategories();
 
         Flight::render('client/index', [
@@ -24,10 +27,12 @@ class ObjetController
         ]);
     }
 
-
-
     public function show($id)
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $model = new ObjetModel(Flight::db());
         $objet = $model->getObjectById($id);
 
@@ -42,14 +47,17 @@ class ObjetController
 
     public function myObjets()
     {
-        if (!isset($_SESSION['user'])) {        //mbola amboariko 
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user'])) {
             Flight::redirect('/');
             return;
         }
 
         $userId = $_SESSION['user']['id'];
-
-        $model = new \app\models\ObjetModel(Flight::db());
+        $model = new ObjetModel(Flight::db());
         $objets = $model->getObjectsByUser($userId);
 
         Flight::render('client/my_items', [
@@ -63,9 +71,13 @@ class ObjetController
             session_start();
         }
 
+        if (!isset($_SESSION['user'])) {
+            Flight::json(['ok' => false, 'message' => 'Non authentifié'], 401);
+            return;
+        }
+
         $model = new ObjetModel(Flight::db());
         $userId = $_SESSION['user']['id'];
-
         $data = $model->getObjectsByUser($userId);
 
         header('Content-Type: application/json; charset=utf-8');
@@ -75,37 +87,56 @@ class ObjetController
         ]);
     }
 
-
     public function create()
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
+        if (!isset($_SESSION['user'])) {
+            Flight::json(['ok' => false, 'message' => 'Non authentifié'], 401);
+            return;
+        }
+
         $model = new ObjetModel(Flight::db());
         $input = Flight::request()->data->getData();
-
         $input['owner_user_id'] = $_SESSION['user']['id'];
-
+        
         $model->createObject($input);
-
         Flight::json(['ok' => true, 'message' => 'Objet ajouté']);
     }
 
     public function update($id)
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user'])) {
+            Flight::json(['ok' => false, 'message' => 'Non authentifié'], 401);
+            return;
+        }
+
         $model = new ObjetModel(Flight::db());
         $input = Flight::request()->data->getData();
-
+        
         $model->updateObject($id, $input);
-
         Flight::json(['ok' => true, 'message' => 'Objet mis à jour']);
     }
 
     public function delete($id)
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user'])) {
+            Flight::json(['ok' => false, 'message' => 'Non authentifié'], 401);
+            return;
+        }
+
         $model = new ObjetModel(Flight::db());
         $model->deleteObject($id);
-
         Flight::json(['ok' => true, 'message' => 'Objet supprimé']);
     }
 }

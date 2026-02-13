@@ -55,7 +55,12 @@ class ObjetModel
 
     public function getObjectById($id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM objet WHERE id = ?");
+        $stmt = $this->pdo->prepare("
+            SELECT o.*, c.name as category_name
+            FROM objet o
+            LEFT JOIN categories c ON c.id = o.category_id
+            WHERE o.id = ?
+        ");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
