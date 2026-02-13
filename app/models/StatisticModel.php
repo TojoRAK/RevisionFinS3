@@ -19,4 +19,20 @@ class StatisticModel
 
         return $stmt->fetchColumn();
     }
+
+    public function countTotalUsers()
+    {
+        $stmt = $this->pdo->query("SELECT count(id) nb FROM users");
+
+        return $stmt->fetchColumn();
+    }
+
+    public function countTotalEchange()
+    {
+        $stmt = $this->pdo->query("SELECT count(id) nb FROM echange");
+
+        return $stmt->fetchColumn();
+    }
+
+    
 }

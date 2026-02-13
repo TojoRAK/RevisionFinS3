@@ -103,7 +103,7 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
               <div class="tt-card p-3">
                 <div class="text-muted-2 small">Échanges</div>
                 <div class="d-flex align-items-end justify-content-between">
-                  <div class="display-6 mb-0">64</div>
+                  <div class="display-6 mb-0"><?= $nbEchange ?></div>
                   <span class="badge badge-soft-info">actifs</span>
                 </div>
               </div>
@@ -112,7 +112,7 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
               <div class="tt-card p-3">
                 <div class="text-muted-2 small">Utilisateurs</div>
                 <div class="d-flex align-items-end justify-content-between">
-                  <div class="display-6 mb-0">1 034</div>
+                  <div class="display-6 mb-0"><?= $nbUser ?></div>
                   <span class="badge badge-soft">total</span>
                 </div>
               </div>
@@ -121,7 +121,7 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
               <div class="tt-card p-3">
                 <div class="text-muted-2 small">Signalements</div>
                 <div class="d-flex align-items-end justify-content-between">
-                  <div class="display-6 mb-0">N.A</div>
+                  <div class="display-6 mb-0">0</div>
                   <span class="badge badge-soft-warning">à traiter</span>
                 </div>
               </div>
@@ -130,7 +130,7 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
 
           <div class="tt-card p-3 mt-3">
             <div class="d-flex justify-content-between align-items-center">
-              <div class="fw-semibold">Activité récente</div>
+              <div class="fw-semibold">Activité récente (en cours de production)</div>
               <button class="btn btn-sm btn-tt-ghost" data-tt-action="see-more">Voir plus</button>
             </div>
             <hr class="tt-divider my-3">

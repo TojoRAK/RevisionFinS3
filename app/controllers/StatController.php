@@ -20,9 +20,11 @@ class StatController
     {
         $stat = new StatisticModel(Flight::db());
 
-        $nbObjet = $stat->countTotalObjet();
-
-        Flight::render('admin/dashboard', ["nbObjet" => $nbObjet]);
+        Flight::render('admin/dashboard', [
+            "nbObjet" =>  $stat->countTotalObjet(),
+            "nbUser" => $stat->countTotalUsers(),
+            "nbEchange" => $stat->countTotalEchange()
+        ]);
         exit;
     }
 }
