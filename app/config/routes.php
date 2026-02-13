@@ -20,90 +20,178 @@ use flight\net\Router;
  */
 $router->group('', function (Router $router) {
 
+	// ============ PUBLIC ============
+
 	$router->get('/', function () {
 		Flight::render('client/login');
 	});
 
-	$router->get('/index', [ObjetController::class, 'index']);
-
-	$router->get('/objet/@id:[0-9]+', [ObjetController::class, 'show']);
-
-	$router->get('/my-objets', [ObjetController::class, 'myObjets']);
-
-	$router->group('/objets', function () use ($router) {
-		$router->get('/list', [ObjetController::class, 'list']);
-		$router->get('/@id:[0-9]+', [ObjetController::class, 'getOne']);
-		$router->post('', [ObjetController::class, 'create']);
-		$router->post('/@id:[0-9]+', [ObjetController::class, 'update']);
-		$router->delete('/@id:[0-9]+', [ObjetController::class, 'delete']);
-
-		$router->get('/@id:[0-9]+/images', [ObjetController::class, 'getImages']);
-        $router->delete('/images/@imageId:[0-9]+', [ObjetController::class, 'deleteImage']);
-        $router->post('/images/@imageId:[0-9]+/set-main/@objetId:[0-9]+', [ObjetController::class, 'setMainImage']);
-	});
-
-
-
 	$router->group('/auth', function () use ($router) {
+
 		$router->get('/register', function () {
 			Flight::render('client/register');
 		});
-		$router->post('/login', [AuthClient::class, 'doLogin']);
-		$router->get('/logout',[AuthClient::class , 'doLogout']);
 
+		$router->post('/register', [AuthClient::class, 'validateInputAndLogin']);
+		$router->post('/login', [AuthClient::class, 'doLogin']);
+
+		$router->get('/logout', function () {
+			requireAuth();
+			(new AuthClient())->doLogout();
+		});
 	});
-	$router->group('/propositions', function () use ($router) {
+
+	// ============ USER PROTECTED ============
+
+	$router->get('/index', function () {
 		requireAuth();
-		$router->get('/list', [PropositionController::class, 'getReceivedPropositions']);
-		$router->post('/@id:[0-9]+/accept', [TradeController::class, 'accept']);
-		$router->post('/@id:[0-9]+/reject', [TradeController::class, 'reject']);
-		$router->post('/@id:[0-9]+/cancel', [TradeController::class, 'cancel']);
+		(new ObjetController())->index();
+	});
+
+	$router->get('/objet/@id:[0-9]+', function ($id) {
+		requireAuth();
+		(new ObjetController())->show($id);
+	});
+
+	$router->get('/my-objets', function () {
+		requireAuth();
+		(new ObjetController())->myObjets();
+	});
+
+	$router->group('/objets', function () use ($router) {
+
+		$router->get('/list', function () {
+			requireAuth();
+			(new ObjetController())->list();
+		});
+
+		$router->get('/@id:[0-9]+', function ($id) {
+			requireAuth();
+			(new ObjetController())->getOne($id);
+		});
+
+		$router->post('', function () {
+			requireAuth();
+			(new ObjetController())->create();
+		});
+
+		$router->post('/@id:[0-9]+', function ($id) {
+			requireAuth();
+			(new ObjetController())->update($id);
+		});
+
+		$router->delete('/@id:[0-9]+', function ($id) {
+			requireAuth();
+			(new ObjetController())->delete($id);
+		});
+
+		$router->get('/@id:[0-9]+/images', function ($id) {
+			requireAuth();
+			(new ObjetController())->getImages($id);
+		});
+
+		$router->delete('/images/@imageId:[0-9]+', function ($imageId) {
+			requireAuth();
+			(new ObjetController())->deleteImage($imageId);
+		});
+
+		$router->post('/images/@imageId:[0-9]+/set-main/@objetId:[0-9]+', function ($imageId, $objetId) {
+			requireAuth();
+			(new ObjetController())->setMainImage($imageId, $objetId);
+		});
+	});
+
+	$router->group('/propositions', function () use ($router) {
+
+		$router->get('/list', function () {
+			requireAuth();
+			(new PropositionController())->getReceivedPropositions();
+		});
+
+		$router->post('/@id:[0-9]+/accept', function ($id) {
+			requireAuth();
+			(new TradeController())->accept($id);
+		});
+
+		$router->post('/@id:[0-9]+/reject', function ($id) {
+			requireAuth();
+			(new TradeController())->reject($id);
+		});
+
+		$router->post('/@id:[0-9]+/cancel', function ($id) {
+			requireAuth();
+			(new TradeController())->cancel($id);
+		});
 	});
 
 	$router->group('/trade', function () use ($router) {
-		$router->post('/request', [TradeController::class, 'makeRequest']);
-	});
 
-
-	$router->group('/auth', function () use ($router) {
-		$router->get('/register', function () {
-			Flight::render('client/register');
+		$router->post('/request', function () {
+			requireAuth();
+			(new TradeController())->makeRequest();
 		});
-		$router->post('/register', [AuthClient::class, 'validateInputAndLogin']);
 	});
 
+	// ============ ADMIN ============
 
-	//==============ADMIN================//
 	$router->group('/admin', function () use ($router) {
 
-		// Public
 		$router->get('/login', function () {
 			Flight::render('admin/login');
 		});
 
 		$router->post('/login', [AdminLogController::class, 'doLogin']);
 
-		$router->get('/logout', [AdminLogController::class, 'doLogout']);
+		$router->get('/logout', function () {
+			requireAdmin();
+			(new AdminLogController())->doLogout();
+		});
 
 		$router->get('/', function () {
-			if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+			if (session_status() !== PHP_SESSION_ACTIVE)
+				session_start();
 			Flight::redirect(isset($_SESSION['admin']) ? '/admin/dash' : '/admin/login');
 		});
 
-
-		$router->get('/dash',[StatController::class, 'showDash'] );
+		$router->get('/dash', function () {
+			requireAdmin();
+			(new StatController())->showDash();
+		});
 
 		$router->get('/categories', function () {
-			Flight::render('admin/categories'); // points to views/admin/categories.php
+			requireAdmin();
+			Flight::render('admin/categories');
 		});
+
 		$router->group('/categories', function () use ($router) {
-			$router->get('/list', [CategorieController::class, 'getAllCategories']);
-			$router->get('/@id:[0-9]+', [CategorieController::class, 'getCategory']);
-			$router->post('', [CategorieController::class, 'createCategory']);
-			$router->post('/@id:[0-9]+', [CategorieController::class, 'updateCategory']);
-			$router->delete('/@id:[0-9]+', [CategorieController::class, 'deleteCategory']);
+
+			$router->get('/list', function () {
+				requireAdmin();
+				(new CategorieController())->getAllCategories();
+			});
+
+			$router->get('/@id:[0-9]+', function ($id) {
+				requireAdmin();
+				(new CategorieController())->getCategory($id);
+			});
+
+			$router->post('', function () {
+				requireAdmin();
+				(new CategorieController())->createCategory();
+			});
+
+			$router->post('/@id:[0-9]+', function ($id) {
+				requireAdmin();
+				(new CategorieController())->updateCategory($id);
+			});
+
+			$router->delete('/@id:[0-9]+', function ($id) {
+				requireAdmin();
+				(new CategorieController())->deleteCategory($id);
+			});
 		});
 	});
+
 }, [SecurityHeadersMiddleware::class]);
 
 
@@ -127,7 +215,8 @@ function requireAdmin(): void
 	//     exit;
 	// }
 }
-function requireAuth(){
+function requireAuth()
+{
 	if (session_status() !== PHP_SESSION_ACTIVE) {
 		session_start();
 	}
