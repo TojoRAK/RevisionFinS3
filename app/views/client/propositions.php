@@ -101,48 +101,58 @@
                                                 alt="">
                                             <div>
                                                 <div class="fw-semibold">Demande pour : <?= $prop['wanted_title'] ?></div>
-                                                <div class="text-muted-2 small">Proposé : <?= $prop['offered_title']?> • par <span
-                                                        class="fw-semibold" style="color:var(--tt-text)">User_88</span></div>
+                                                <div class="text-muted-2 small">Proposé : <?= $prop['offered_title'] ?> • par
+                                                    <span class="fw-semibold"
+                                                        style="color:var(--tt-text)"><?= $prop['requester_name'] ?></span>
+                                                </div>
                                                 <div class="mt-2 d-flex gap-2 flex-wrap">
-                                                    <span class="badge badge-soft-warning"><?= $prop['status']?></span>
+                                                    <span class="badge badge-soft-warning"><?= $prop['status'] ?></span>
                                                     <span class="badge badge-soft">Il y a 2h</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="d-flex gap-2 align-self-md-center">
-                                            <?php if($prop['status'] == 'PENDING') {?>
-                                            <button class="btn btn-tt-primary" data-tt-action="accept">Accepter</button>
-                                            <button class="btn btn-outline-danger" data-tt-action="reject">Refuser</button>
-                                            <?php }?>
+                                            <?php if ($prop['status'] == 'PENDING') { ?>
+                                                <button class="btn btn-tt-primary" data-tt-action="accept">Accepter</button>
+                                                <button class="btn btn-outline-danger" data-tt-action="reject">Refuser</button>
+                                            <?php } ?>
                                         </div>
                                     </div>
                                 </div>
                             <?php }
                         } ?>
+                    </div>
 
                     <div class="tab-pane fade" id="pane-sent" role="tabpanel">
-                        <div class="tt-card p-3 mb-3">
-                            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
-                                <div class="d-flex gap-3">
-                                    <img src="../assets/img/placeholder.jpg" width="90" height="70"
-                                        style="object-fit:cover;border-radius:12px;border:1px solid var(--tt-border)"
-                                        alt="">
-                                    <div>
-                                        <div class="fw-semibold">Offre envoyée : Casque audio</div>
-                                        <div class="text-muted-2 small">Pour : Chaise design • à <span
-                                                class="fw-semibold" style="color:var(--tt-text)">User_45</span></div>
-                                        <div class="mt-2 d-flex gap-2 flex-wrap">
-                                            <span class="badge badge-soft-info">Envoyée</span>
-                                            <span class="badge badge-soft">Il y a 1j</span>
+                        <?php foreach ($propositions as $prop) {
+                            if ($_SESSION['user']['id'] == $prop['requester_id']) { ?>
+                                <div class="tt-card p-3 mb-3">
+                                    <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                                        <div class="d-flex gap-3">
+                                            <img src="../assets/img/placeholder.jpg" width="90" height="70"
+                                                style="object-fit:cover;border-radius:12px;border:1px solid var(--tt-border)"
+                                                alt="">
+                                            <div>
+                                                <div class="fw-semibold">Demande pour : <?= $prop['offered_title'] ?></div>
+                                                <div class="text-muted-2 small">Proposé : <?= $prop['wanted_title'] ?> • par
+                                                    <span class="fw-semibold"
+                                                        style="color:var(--tt-text)"><?= $prop['owner_name'] ?></span>
+                                                </div>
+                                                <div class="mt-2 d-flex gap-2 flex-wrap">
+                                                    <span class="badge badge-soft-warning"><?= $prop['status'] ?></span>
+                                                    <span class="badge badge-soft">Il y a 2h</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-2 align-self-md-center">
+                                            <?php if ($prop['status'] == 'PENDING') { ?>
+                                                  <button class="btn btn-outline-danger" data-tt-action="cancel">Annuler</button>
+                                            <?php } ?>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="d-flex gap-2 align-self-md-center">
-                                    <button class="btn btn-outline-danger" data-tt-action="cancel">Annuler</button>
-                                </div>
-                            </div>
-                        </div>
-
+                                    </div>
+                                <?php }
+                        } ?>
                         <div class="tt-empty">
                             <div class="icon"><i class="bi bi-send-slash"></i></div>
                             <div class="fw-semibold mt-2">Astuce</div>
