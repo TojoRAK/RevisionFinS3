@@ -22,7 +22,7 @@ class StatController
 
         $nbObjet = $stat->countTotalObjet();
 
-        Flight::render('/admin/dash', ["nbObjet" => $nbObjet]);
+        Flight::render('admin/dashboard', ["nbObjet" => $nbObjet]);
         exit;
     }
 }

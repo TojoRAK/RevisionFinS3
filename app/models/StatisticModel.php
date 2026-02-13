@@ -17,6 +17,6 @@ class StatisticModel
     {
         $stmt = $this->pdo->query("SELECT count(id) nb FROM objet");
 
-        return $stmt->fetchColumn(PDO::FETCH_ASSOC);
+        return $stmt->fetchColumn();
     }
 }

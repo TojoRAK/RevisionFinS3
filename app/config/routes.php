@@ -8,6 +8,7 @@ use app\controllers\PropositionController;
 
 use app\controllers\AuthClient;
 use app\controllers\ObjetController;
+use app\controllers\StatController;
 use app\controllers\TradeController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
@@ -82,10 +83,7 @@ $router->group('', function (Router $router) {
 		});
 
 
-		$router->get('/dash', function () {
-			// requireAdmin();
-			Flight::render('admin/dashboard');
-		});
+		$router->get('/dash',[StatController::class, 'showDash'] );
 
 		$router->get('/categories', function () {
 			Flight::render('admin/categories'); // points to views/admin/categories.php
