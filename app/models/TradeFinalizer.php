@@ -13,22 +13,22 @@ class TradeFinalizer
         $this->pdo = $pdo;
     }
 
-    public function accept($propositionId, $actorUserId): bool
+    public function accept($propositionId, $actorUserId)
     {
         return $this->finalize((int) $propositionId, (int) $actorUserId, 'ACCEPTED');
     }
 
-    public function reject($propositionId, $actorUserId): bool
+    public function reject($propositionId, $actorUserId)
     {
         return $this->finalize((int) $propositionId, (int) $actorUserId, 'REJECTED');
     }
 
-    public function cancel($propositionId, $actorUserId): bool
+    public function cancel($propositionId, $actorUserId)
     {
         return $this->finalize((int) $propositionId, (int) $actorUserId, 'CANCELLED');
     }
 
-    private function finalize(int $propositionId, int $actorUserId, string $targetStatus): bool
+    private function finalize($propositionId, $actorUserId, $targetStatus)
     {
         if (!in_array($targetStatus, ['ACCEPTED', 'REJECTED', 'CANCELLED'], true)) {
             throw new \InvalidArgumentException('Statut cible invalide.');
