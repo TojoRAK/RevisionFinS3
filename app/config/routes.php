@@ -8,6 +8,7 @@ use app\controllers\PropositionController;
 
 use app\controllers\AuthClient;
 use app\controllers\ObjetController;
+use app\controllers\TradeController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
@@ -45,6 +46,13 @@ $router->group('', function (Router $router) {
 	});
 	$router->group('/propositions', function () use ($router) {
 		$router->get('/list', [PropositionController::class, 'getReceivedPropositions']);
+		$router->post('/@id:[0-9]+/accept', [TradeController::class, 'accept']);
+		$router->post('/@id:[0-9]+/reject', [TradeController::class, 'reject']);
+		$router->post('/@id:[0-9]+/cancel', [TradeController::class, 'cancel']);
+	});
+
+	$router->group('/trade', function () use ($router) {
+		$router->post('/request', [TradeController::class, 'makeRequest']);
 	});
 
 

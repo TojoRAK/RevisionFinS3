@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (data.ok) {
                 // setStatus("success", "Validation OK ✅ Envoi en cours...");
-                window.location = 'propositions/list';
+                window.location = '/index';
             } else {
                 // spinner.setAttribute("class", "spinner");
                 setStatus("danger", data.errors);
