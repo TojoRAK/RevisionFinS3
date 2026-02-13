@@ -2,12 +2,12 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-if (isset($_SESSION['admin'])) {
+if (!isset($_SESSION['admin'])) {
     header('Location: /');
     exit;
 }
 $nonce = Flight::app()->get('csp_nonce') ?? '';
-?>
+?>  
 <!doctype html>
 <html lang="fr">
 <head>

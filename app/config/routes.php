@@ -39,6 +39,8 @@ $router->group('', function (Router $router) {
 
 	//==============ADMIN================//
 	$router->group('/admin', function () use ($router) {
+
+		// Public
 		$router->get('/login', function () {
 			Flight::render('admin/login');
 		});
@@ -48,10 +50,13 @@ $router->group('', function (Router $router) {
 		$router->get('/logout', [AdminLogController::class, 'doLogout']);
 
 		$router->get('/', function () {
-			Flight::redirect('/admin/login');
+			if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+			Flight::redirect(isset($_SESSION['admin']) ? '/admin/dash' : '/admin/login');
 		});
 
+
 		$router->get('/dash', function () {
+			// requireAdmin();
 			Flight::render('admin/dashboard');
 		});
 
