@@ -2,6 +2,8 @@
 
 // use Flight;
 use app\controllers\CategorieController;
+use app\controllers\PropositionController;
+
 use app\controllers\AuthClient;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
@@ -25,6 +27,9 @@ $router->group('', function (Router $router) {
         });
         $router->post('/login' , [AuthClient::class , 'doLogin']);
     });
+	$router->group('/propositions' , function () use ($router){
+		$router->get('/list' , [PropositionController::class , 'getReceivedPropositions']);
+	});
 
 
 	$router->group('/auth', function () use ($router) {
