@@ -37,7 +37,7 @@ $router->group('', function (Router $router) {
 
 		$router->get('/logout', function () {
 			requireAuth();
-			(new AuthClient())->doLogout();
+			(new AuthClient(Flight::app()))->doLogout();
 		});
 	});
 
@@ -144,7 +144,7 @@ $router->group('', function (Router $router) {
 
 		$router->get('/logout', function () {
 			requireAdmin();
-			(new AdminLogController())->doLogout();
+			(new AdminLogController(Flight::app()))->doLogout();
 		});
 
 		$router->get('/', function () {
@@ -155,7 +155,7 @@ $router->group('', function (Router $router) {
 
 		$router->get('/dash', function () {
 			requireAdmin();
-			(new StatController())->showDash();
+			(new StatController(Flight::app()))->showDash();
 		});
 
 		$router->get('/categories', function () {
