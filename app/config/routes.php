@@ -4,7 +4,10 @@
 
 use app\controllers\AdminLogController;
 use app\controllers\CategorieController;
+use app\controllers\PropositionController;
+
 use app\controllers\AuthClient;
+use app\controllers\ObjetController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
@@ -19,6 +22,19 @@ $router->group('', function (Router $router) {
 		Flight::render('client/login');
 	});
 
+	$router->get('/index', [ObjetController::class, 'index']);
+
+	$router->get('/objet/@id:[0-9]+', [ObjetController::class, 'show']);
+
+	$router->get('/my-objets', [ObjetController::class, 'myObjets']);
+
+	$router->group('/objets', function () use ($router) {
+		$router->get('/list', [ObjetController::class, 'list']);
+		$router->post('', [ObjetController::class, 'create']);
+		$router->post('/@id:[0-9]+', [ObjetController::class, 'update']);
+		$router->delete('/@id:[0-9]+', [ObjetController::class, 'delete']);
+	});
+
 
 
 	$router->group('/auth', function () use ($router) {
@@ -26,6 +42,9 @@ $router->group('', function (Router $router) {
 			Flight::render('client/register');
 		});
 		$router->post('/login', [AuthClient::class, 'doLogin']);
+	});
+	$router->group('/propositions', function () use ($router) {
+		$router->get('/list', [PropositionController::class, 'getReceivedPropositions']);
 	});
 
 

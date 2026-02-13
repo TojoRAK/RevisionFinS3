@@ -17,18 +17,23 @@ class UserModel
     public function checkLoginClient($email, $pwd)
     {
         $stmt = $this->pdo->prepare(
-            "SELECT password_hash FROM users WHERE email = ? LIMIT 1"
+            "SELECT id, email, password_hash FROM users WHERE email = ? LIMIT 1"
         );
         $stmt->execute([$email]);
 
-        $hash = $stmt->fetchColumn();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$hash) {
+        if (!$user) {
             return false;
         }
 
-        return password_verify($pwd, $hash);
+        if (!password_verify($pwd, $user['password_hash'])) {
+            return false;
+        }
+
+        return $user;
     }
+
 
 
     public function checkLoginAdmin($email, $pwd)
