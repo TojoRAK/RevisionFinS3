@@ -32,8 +32,8 @@
 
             <div class="collapse navbar-collapse" id="topNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
-                    <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/index.html">Objets</a></li>
-                    <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/my_items.html">Mes objets</a>
+                    <li class="nav-item"><a class="nav-link tt-nav-link" href="/index">Objets</a></li>
+                    <li class="nav-item"><a class="nav-link tt-nav-link" href="/my-objets">Mes objets</a>
                     </li>
                     <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/offers.html">Échanges</a></li>
                     <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/profile.html">Profil</a></li>
