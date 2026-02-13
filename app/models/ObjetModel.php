@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models;
 
 use PDO;
@@ -40,6 +41,58 @@ class ObjetModel
         ");
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllEstimatedObjects($userId, $idObjet, $marge) // marge en %
+    {
+        $marge = ((float)$marge) / 100.0;
+
+        $stmtRef = $this->pdo->prepare("
+        SELECT estimated_value
+        FROM objet
+        WHERE id = ? AND owner_user_id = ?
+        LIMIT 1
+    ");
+        $stmtRef->execute([$idObjet, $userId]);
+        $ref = $stmtRef->fetch(PDO::FETCH_ASSOC);
+
+        if (!$ref) {
+            return [];
+        }
+
+        $price = (float)$ref['estimated_value'];
+
+        if ($price <= 0) {
+            return [];
+        }
+
+        $min = $price * (1.0 - $marge);
+        $max = $price * (1.0 + $marge);
+
+        if ($min > $max) {
+            [$min, $max] = [$max, $min];
+        }
+
+        $stmt = $this->pdo->prepare("
+        SELECT o.*,
+               c.name AS category_name,
+               (SELECT oi.path
+                FROM objet_image oi
+                WHERE oi.objet_id = o.id AND oi.is_main = 1
+                LIMIT 1) AS main_image,
+               (SELECT COUNT(*)
+                FROM objet_image oi2
+                WHERE oi2.objet_id = o.id) AS image_count
+        FROM objet o
+        JOIN categories c ON c.id = o.category_id
+        WHERE o.owner_user_id <> ?
+          AND o.id <> ?                          
+          AND o.estimated_value BETWEEN ? AND ?
+        ORDER BY ABS(o.estimated_value - ?) ASC, o.created_at DESC
+    ");
+
+        $stmt->execute([$userId, $idObjet, $min, $max, $price]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getObjectsByUser($userId)
