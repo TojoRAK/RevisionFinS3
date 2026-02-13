@@ -19,17 +19,37 @@
           <div class="tt-surface p-3 p-md-4">
             <div id="itemCarousel" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner rounded-4 overflow-hidden" style="border:1px solid var(--tt-border)">
-                <div class="carousel-item active">
-                  <img src="../assets/img/placeholder.jpg" class="d-block w-100" style="aspect-ratio: 16/10; object-fit:cover" alt="<?= htmlspecialchars($objet['title']) ?>">
-                </div>
-                <!-- Vous pouvez ajouter plus d'images ici si vous avez une table images -->
+                <?php if (!empty($images)): ?>
+                  <?php foreach ($images as $index => $image): ?>
+                    <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                      <img src="<?= htmlspecialchars($image['path']) ?>" class="d-block w-100" style="aspect-ratio: 16/10; object-fit:cover" alt="<?= htmlspecialchars($objet['title']) ?>">
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <div class="carousel-item active">
+                    <img src="../assets/img/placeholder.jpg" class="d-block w-100" style="aspect-ratio: 16/10; object-fit:cover" alt="<?= htmlspecialchars($objet['title']) ?>">
+                  </div>
+                <?php endif; ?>
               </div>
-              <?php if (false): // Afficher les contrôles seulement s'il y a plusieurs images ?>
+              
+              <?php if (count($images) > 1): ?>
+              <!-- Indicators -->
+              <div class="carousel-indicators">
+                <?php foreach ($images as $index => $image): ?>
+                  <button type="button" data-bs-target="#itemCarousel" data-bs-slide-to="<?= $index ?>" 
+                          <?= $index === 0 ? 'class="active" aria-current="true"' : '' ?> 
+                          aria-label="Slide <?= $index + 1 ?>"></button>
+                <?php endforeach; ?>
+              </div>
+              
+              <!-- Controls -->
               <button class="carousel-control-prev" type="button" data-bs-target="#itemCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Précédent</span>
               </button>
               <button class="carousel-control-next" type="button" data-bs-target="#itemCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Suivant</span>
               </button>
               <?php endif; ?>
             </div>

@@ -30,7 +30,7 @@
                             <i class="bi bi-plus-circle me-1"></i>Ajouter
                         </button>
 
-                        <a class="btn btn-tt-ghost btn-sm" href="../auth/login.html">
+                        <a class="btn btn-tt-ghost btn-sm" href="/auth/logout">
                             <i class="bi bi-box-arrow-in-right me-1"></i>Connexion
                         </a>
                     </li>

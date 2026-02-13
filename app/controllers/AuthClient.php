@@ -93,5 +93,21 @@ class AuthClient
             'values' => $result['values'],
         ]);
     }
+    public function doLogout()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        unset($_SESSION['user']);
+
+        session_regenerate_id(true);
+
+        session_destroy();
+
+
+        Flight::redirect('/');
+        return;
+    }
 
 }
