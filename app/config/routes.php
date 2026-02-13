@@ -108,6 +108,11 @@ $router->group('', function (Router $router) {
 			(new PropositionController())->getReceivedPropositions();
 		});
 
+		$router->get('/historique', function () {
+			requireAuth();
+			(new PropositionController())->showHistorique();
+		});
+
 		$router->post('/@id:[0-9]+/accept', function ($id) {
 			requireAuth();
 			(new TradeController())->accept($id);

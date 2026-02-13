@@ -27,6 +27,7 @@
                         <div class="text-muted-2">Offres reçues et envoyées, statuts, actions.</div>
                     </div>
                     <div class="d-flex gap-2">
+                        <a href="historique" class="btn btn-tt-ghost" >Historique des échanges AT</a>
                         <button class="btn btn-tt-ghost" data-tt-action="refresh"><i
                                 class="bi bi-arrow-repeat me-1"></i>Rafraîchir</button>
                     </div>
@@ -73,8 +74,10 @@
                                         </div>
                                         <div class="d-flex gap-2 align-self-md-center">
                                             <?php if ($prop['status'] == 'PENDING') { ?>
-                                                <button class="btn btn-tt-primary" data-tt-action="accept" data-proposition-id="<?= $prop['id'] ?>">Accepter</button>
-                                                <button class="btn btn-outline-danger" data-tt-action="reject" data-proposition-id="<?= $prop['id'] ?>">Refuser</button>
+                                                <button class="btn btn-tt-primary" data-tt-action="accept"
+                                                    data-proposition-id="<?= $prop['id'] ?>">Accepter</button>
+                                                <button class="btn btn-outline-danger" data-tt-action="reject"
+                                                    data-proposition-id="<?= $prop['id'] ?>">Refuser</button>
                                             <?php } ?>
                                         </div>
                                     </div>
@@ -94,8 +97,10 @@
                                                 alt="">
                                             <div>
                                                 <div class="fw-semibold">Offre envoyée <?= $prop['offered_title'] ?></div>
-                                                <div class="text-muted-2 small">Pour : <?= $prop['wanted_title'] ?> • à <span class="fw-semibold" style="color:var(--tt-text)"><?= $prop['owner_name'] ?></span>
-                                                    
+                                                <div class="text-muted-2 small">Pour : <?= $prop['wanted_title'] ?> • à <span
+                                                        class="fw-semibold"
+                                                        style="color:var(--tt-text)"><?= $prop['owner_name'] ?></span>
+
                                                 </div>
                                                 <div class="mt-2 d-flex gap-2 flex-wrap">
                                                     <span class="badge badge-soft-warning"><?= $prop['status'] ?></span>
@@ -105,7 +110,8 @@
                                         </div>
                                         <div class="d-flex gap-2 align-self-md-center">
                                             <?php if ($prop['status'] == 'PENDING') { ?>
-                                                <button class="btn btn-outline-danger" data-tt-action="cancel" data-proposition-id="<?= $prop['id'] ?>">Annuler</button>
+                                                <button class="btn btn-outline-danger" data-tt-action="cancel"
+                                                    data-proposition-id="<?= $prop['id'] ?>">Annuler</button>
                                             <?php } ?>
                                         </div>
                                     </div>

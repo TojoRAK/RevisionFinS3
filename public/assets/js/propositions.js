@@ -56,7 +56,10 @@
       const result = await postJson(endpoint);
 
       if (result && result.ok) {
-        window.toast?.(action === 'accept' ? 'Proposition acceptée.' : 'Proposition refusée.', 'success');
+        const msg = action === 'accept'
+          ? 'Proposition acceptée.'
+          : (action === 'reject' ? 'Proposition refusée.' : 'Proposition annulée.');
+        window.toast?.(msg, 'success');
         window.location.reload();
         return;
       }
