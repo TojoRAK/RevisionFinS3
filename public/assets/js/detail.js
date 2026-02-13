@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Erreur lors du chargement des objets:', error);
                 select.disabled = false;
                 select.innerHTML = '<option value="">Erreur de chargement</option>';
-                showToast('Impossible de charger vos objets.', 'error');
+                showToast('Impossible de charger vos objets.', 'danger');
             });
     }
     
@@ -78,12 +78,23 @@ document.addEventListener('DOMContentLoaded', function() {
     function submitOffer() {
         // Récupérer l'ID de l'objet demandé depuis l'attribut data
         const objetDemandeId = modal.dataset.objetId;
+
+        const offeredId = parseInt(select.value);
+        const wantedId = parseInt(objetDemandeId);
+
+        if (!Number.isFinite(offeredId) || offeredId <= 0) {
+            showToast('Veuillez sélectionner un objet à proposer.', 'warning');
+            return;
+        }
+        if (!Number.isFinite(wantedId) || wantedId <= 0) {
+            showToast("Objet demandé invalide.", 'danger');
+            return;
+        }
         
-        const formData = {
-            objet_propose_id: parseInt(select.value),
-            objet_demande_id: parseInt(objetDemandeId),
-            message: messageTextarea.value.trim()
-        };
+        const fd = new FormData();
+        fd.append('offered_id', String(offeredId));
+        fd.append('wanted_id', String(wantedId));
+        fd.append('message', (messageTextarea?.value || '').trim());
         
         // Désactiver le bouton de soumission
         const submitBtn = form.querySelector('button[type="submit"]');
@@ -91,12 +102,10 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Envoi...';
         
-        fetch('/propositions', {
+        fetch('/trade/request', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
+            body: fd,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(response => response.json())
         .then(data => {
@@ -112,12 +121,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 form.reset();
                 form.classList.remove('was-validated');
             } else {
-                showToast(data.message || 'Erreur lors de l\'envoi de la proposition', 'error');
+                showToast(data.message || 'Erreur lors de l\'envoi de la proposition', 'danger');
             }
         })
         .catch(error => {
             console.error('Erreur:', error);
-            showToast('Erreur lors de l\'envoi de la proposition', 'error');
+            showToast('Erreur lors de l\'envoi de la proposition', 'danger');
         })
         .finally(() => {
             // Réactiver le bouton

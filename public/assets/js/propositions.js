@@ -40,7 +40,7 @@
     if (!btn) return;
 
     const action = btn.getAttribute('data-tt-action');
-    if (action !== 'accept' && action !== 'reject') return;
+    if (action !== 'accept' && action !== 'reject' && action !== 'cancel') return;
 
     const propositionId = btn.getAttribute('data-proposition-id');
     if (!propositionId) {
