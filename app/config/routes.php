@@ -64,6 +64,11 @@ $router->group('', function (Router $router) {
 			requireAuth();
 			(new ObjetController())->list();
 		});
+		$router->get('/list/filter', function () {
+			requireAuth();
+			(new ObjetController())->filter();
+
+		});
 
 		$router->get('/@id:[0-9]+', function ($id) {
 			requireAuth();
@@ -106,6 +111,11 @@ $router->group('', function (Router $router) {
 		$router->get('/list', function () {
 			requireAuth();
 			(new PropositionController())->getReceivedPropositions();
+		});
+
+		$router->get('/historique', function () {
+			requireAuth();
+			(new PropositionController())->showHistorique();
 		});
 
 		$router->post('/@id:[0-9]+/accept', function ($id) {
