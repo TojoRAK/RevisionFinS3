@@ -28,15 +28,23 @@ $router->group('', function (Router $router) {
 
 	$router->get('/my-objets', [ObjetController::class, 'myObjets']);
 
+	$router->group('/objets', function () use ($router) {
+		$router->get('/list', [ObjetController::class, 'list']);
+		$router->post('', [ObjetController::class, 'create']);
+		$router->post('/@id:[0-9]+', [ObjetController::class, 'update']);
+		$router->delete('/@id:[0-9]+', [ObjetController::class, 'delete']);
+	});
 
-    $router->group('/auth', function () use ($router) {
-        $router->get('/register', function () {
-            Flight::render('client/register');
-        });
-        $router->post('/login' , [AuthClient::class , 'doLogin']);
-    });
-	$router->group('/propositions' , function () use ($router){
-		$router->get('/list' , [PropositionController::class , 'getReceivedPropositions']);
+
+
+	$router->group('/auth', function () use ($router) {
+		$router->get('/register', function () {
+			Flight::render('client/register');
+		});
+		$router->post('/login', [AuthClient::class, 'doLogin']);
+	});
+	$router->group('/propositions', function () use ($router) {
+		$router->get('/list', [PropositionController::class, 'getReceivedPropositions']);
 	});
 
 

@@ -10,10 +10,12 @@ class ObjetController
 {
     public function index()
     {
-        $objetModel = new ObjetModel(Flight::db());
-        $categorieModel = new CategorieModel(Flight::db());
+        $userId = $_SESSION['user']['id'] ?? null;
 
-        $objets = $objetModel->getAllObjets();
+        $objetModel = new \app\models\ObjetModel(Flight::db());
+        $objets = $objetModel->getAllObjectsExceptUser($userId);
+        // Get categories
+        $categorieModel = new \app\models\CategorieModel(Flight::db());
         $categories = $categorieModel->getAllCategories();
 
         Flight::render('client/index', [
@@ -22,10 +24,12 @@ class ObjetController
         ]);
     }
 
+
+
     public function show($id)
     {
         $model = new ObjetModel(Flight::db());
-        $objet = $model->getObjetById($id);
+        $objet = $model->getObjectById($id);
 
         if (!$objet) {
             Flight::halt(404, "Objet non trouvé");
@@ -46,10 +50,62 @@ class ObjetController
         $userId = $_SESSION['user']['id'];
 
         $model = new \app\models\ObjetModel(Flight::db());
-        $objets = $model->getObjetsByOwner($userId);
+        $objets = $model->getObjectsByUser($userId);
 
         Flight::render('client/my_items', [
             'objets' => $objets
         ]);
+    }
+
+    public function list()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $model = new ObjetModel(Flight::db());
+        $userId = $_SESSION['user']['id'];
+
+        $data = $model->getObjectsByUser($userId);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'ok'   => true,
+            'data' => $data
+        ]);
+    }
+
+
+    public function create()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $model = new ObjetModel(Flight::db());
+        $input = Flight::request()->data->getData();
+
+        $input['owner_user_id'] = $_SESSION['user']['id'];
+
+        $model->createObject($input);
+
+        Flight::json(['ok' => true, 'message' => 'Objet ajouté']);
+    }
+
+    public function update($id)
+    {
+        $model = new ObjetModel(Flight::db());
+        $input = Flight::request()->data->getData();
+
+        $model->updateObject($id, $input);
+
+        Flight::json(['ok' => true, 'message' => 'Objet mis à jour']);
+    }
+
+    public function delete($id)
+    {
+        $model = new ObjetModel(Flight::db());
+        $model->deleteObject($id);
+
+        Flight::json(['ok' => true, 'message' => 'Objet supprimé']);
     }
 }

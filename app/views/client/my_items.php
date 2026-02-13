@@ -16,44 +16,7 @@
      Dynamic placeholders (Flight later):
      - {{user.name}} / {{user.avatarUrl}} / {{isLoggedIn}}
 -->
-  <nav class="navbar navbar-expand-lg tt-navbar sticky-top">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="../client/index.html">
-        <span class="tt-brand-badge fw-bold">TT</span>
-        <div class="d-flex flex-column lh-sm">
-          <span class="fw-semibold" style="color:var(--tt-text)">Takalo-takalo</span>
-          <span class="text-muted-2 small d-none d-md-inline">Plateforme d’échange d’objets</span>
-        </div>
-      </a>
-
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
-        <span class="navbar-toggler-icon" style="filter: invert(.85)"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="topNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
-          <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/index.html">Objets</a></li>
-          <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/my_items.html">Mes objets</a></li>
-          <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/offers.html">Échanges</a></li>
-          <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/profile.html">Profil</a></li>
-
-          <li class="nav-item d-flex align-items-center gap-2 ms-lg-2">
-            <button class="btn btn-tt-ghost btn-tt-icon" data-tt-theme-toggle title="Basculer thème">
-              <i class="bi bi-sun"></i>
-            </button>
-
-            <button class="btn btn-tt-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalQuickPost">
-              <i class="bi bi-plus-circle me-1"></i>Ajouter
-            </button>
-
-            <a class="btn btn-tt-ghost btn-sm" href="../auth/login.html">
-              <i class="bi bi-box-arrow-in-right me-1"></i>Connexion
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <?php include('inc/header.php') ?>
 
 
   <main class="tt-main">
@@ -85,63 +48,22 @@
                 <th class="text-end">Actions</th>
               </tr>
             </thead>
-            <tbody>
-
-              <?php if (empty($objets)): ?>
-                <tr>
-                  <td colspan="5" class="text-center text-muted">
-                    Vous n'avez encore ajouté aucun objet.
-                  </td>
-                </tr>
-              <?php endif; ?>
-
-              <?php foreach ($objets as $objet): ?>
-                <tr>
-                  <td>
-                    <div class="fw-semibold">
-                      <?= htmlspecialchars($objet['title']) ?>
-                    </div>
-                    <div class="text-muted-2 small">
-                      <?= htmlspecialchars(substr($objet['description'], 0, 60)) ?>...
-                    </div>
-                  </td>
-
-                  <td>
-                    <span class="badge badge-soft">
-                      <?= htmlspecialchars($objet['category_name']) ?>
-                    </span>
-                  </td>
-
-                  <td>
-                    <?= number_format($objet['estimated_value'], 2, ',', ' ') ?> Ar
-                  </td>
-
-                  <td>
-                    <?= date('d/m/Y', strtotime($objet['created_at'])) ?>
-                  </td>
-
-                  <td class="text-end">
-                    <a href="/objet/edit/<?= $objet['id'] ?>" class="btn btn-sm btn-tt-ghost">
-                      <i class="bi bi-pencil"></i>
-                    </a>
-
-                    <a href="/objet/delete/<?= $objet['id'] ?>"
-                      class="btn btn-sm btn-outline-danger">
-                      <i class="bi bi-trash"></i>
-                    </a>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-
+            <tbody id="objectsTableBody">
+              <tr>
+                <td colspan="5" class="text-center text-muted">
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Chargement…
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
 
     </div>
-    </div>
   </main>
 
+  <!-- Modal Add/Edit Object -->
   <div class="modal fade" id="modalItemForm" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content tt-card">
@@ -150,41 +72,43 @@
           <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
-        <form class="modal-body needs-validation" novalidate>
+        <form id="objectForm" class="modal-body needs-validation" novalidate>
+          <input type="hidden" id="objectId" value="">
+
           <div class="row g-3">
             <div class="col-md-7">
               <label class="form-label">Titre</label>
-              <input class="form-control" required placeholder="Ex: Clavier mécanique">
+              <input id="objectTitle" class="form-control" required placeholder="Ex: Clavier mécanique">
               <div class="invalid-feedback">Titre requis.</div>
             </div>
+
             <div class="col-md-5">
               <label class="form-label">Valeur estimée</label>
-              <input type="number" class="form-control" required min="1" placeholder="Ex: 120000">
+              <input id="objectValue" type="number" class="form-control" required min="1" placeholder="Ex: 120000">
               <div class="invalid-feedback">Valeur invalide.</div>
             </div>
+
             <div class="col-md-6">
               <label class="form-label">Catégorie</label>
-              <select class="form-select" required>
+              <select id="objectCategory" class="form-select" required>
                 <option value="">Choisir…</option>
-                <option>Électronique</option>
-                <option>Maison</option>
-                <option>Mode</option>
-                <option>Loisirs</option>
+                <!-- Options will be injected dynamically by JS -->
               </select>
               <div class="invalid-feedback">Catégorie requise.</div>
             </div>
+
             <div class="col-md-6">
               <label class="form-label">Statut</label>
-              <select class="form-select">
-                <option>Disponible</option>
-                <option>En échange</option>
-                <option>Indisponible</option>
+              <select id="objectStatus" class="form-select">
+                <option value="available">Disponible</option>
+                <option value="exchange">En échange</option>
+                <option value="unavailable">Indisponible</option>
               </select>
             </div>
 
             <div class="col-12">
               <label class="form-label">Description</label>
-              <textarea class="form-control" rows="3" placeholder="Détails, état, accessoires…"></textarea>
+              <textarea id="objectDescription" class="form-control" rows="3" placeholder="Détails, état, accessoires…"></textarea>
             </div>
 
             <div class="col-12">
@@ -209,32 +133,31 @@
     </div>
   </div>
 
-  <!-- components/footer.html -->
-  <footer class="tt-footer mt-4">
-    <div class="container py-4">
-      <div class="row g-3 align-items-center">
-        <div class="col-md-6">
-          <div class="d-flex align-items-center gap-2">
-            <span class="tt-brand-badge fw-bold">TT</span>
-            <div class="lh-sm">
-              <div class="fw-semibold" style="color:var(--tt-text)">Takalo-takalo</div>
-              <div class="text-muted-2 small">Échange simple • UI moderne • Responsive</div>
-            </div>
+  <!-- Delete Confirm Modal -->
+  <div class="modal fade" id="modalConfirmDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content tt-card">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Confirmer la suppression</h5>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="tt-empty text-center">
+            <div class="icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="fw-semibold mt-2">Cette action est irréversible.</div>
+            <div class="text-muted-2 small mt-1">Suppression simulée (pas de backend).</div>
           </div>
         </div>
-
-        <div class="col-md-6 text-md-end">
-          <div class="d-flex gap-3 justify-content-md-end flex-wrap">
-            <a href="../client/index.html" class="text-muted-2 small">Objets</a>
-            <a href="../client/offers.html" class="text-muted-2 small">Échanges</a>
-            <a href="../admin/login.html" class="text-muted-2 small">Admin</a>
-            <a href="#" class="text-muted-2 small" onclick="toast('Lien CGU (démo)', 'info')">CGU</a>
-          </div>
-          <div class="text-muted-2 small mt-2">© <span id="year"></span> Takalo-takalo</div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-tt-ghost" data-bs-dismiss="modal">Annuler</button>
+          <button id="confirmDeleteBtn" class="btn btn-danger" data-tt-action="delete-confirm">Supprimer</button>
         </div>
       </div>
     </div>
-  </footer>
+  </div>
+
+  <!-- components/footer.html -->
+  <?php include('inc/footer.php') ?>
   <script>
     document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());
   </script>
@@ -300,7 +223,7 @@
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/objects.js"></script>
 </body>
 
 </html>
