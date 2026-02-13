@@ -94,8 +94,8 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
               <div class="tt-card p-3">
                 <div class="text-muted-2 small">Objets</div>
                 <div class="d-flex align-items-end justify-content-between">
-                  <div class="display-6 mb-0">248</div>
-                  <span class="badge badge-soft-success">+12%</span>
+                  <div class="display-6 mb-0"><?= $nbObjet ?></div>
+                  <!-- <span class="badge badge-soft-success">+12%</span> -->
                 </div>
               </div>
             </div>
@@ -121,7 +121,7 @@ $nonce = Flight::app()->get('csp_nonce') ?? '';
               <div class="tt-card p-3">
                 <div class="text-muted-2 small">Signalements</div>
                 <div class="d-flex align-items-end justify-content-between">
-                  <div class="display-6 mb-0">3</div>
+                  <div class="display-6 mb-0">N.A</div>
                   <span class="badge badge-soft-warning">à traiter</span>
                 </div>
               </div>
