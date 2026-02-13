@@ -45,4 +45,19 @@ class ObjetModel
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getObjetsByOwner($userId)
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT o.*,
+               c.name AS category_name
+        FROM objet o
+        JOIN categories c ON o.category_id = c.id
+        WHERE o.owner_user_id = ?
+        ORDER BY o.created_at DESC
+    ");
+
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
