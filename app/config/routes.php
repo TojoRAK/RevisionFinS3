@@ -44,8 +44,11 @@ $router->group('', function (Router $router) {
 			Flight::render('client/register');
 		});
 		$router->post('/login', [AuthClient::class, 'doLogin']);
+		$router->get('/logout',[AuthClient::class , 'doLogout']);
+
 	});
 	$router->group('/propositions', function () use ($router) {
+		requireAuth();
 		$router->get('/list', [PropositionController::class, 'getReceivedPropositions']);
 		$router->post('/@id:[0-9]+/accept', [TradeController::class, 'accept']);
 		$router->post('/@id:[0-9]+/reject', [TradeController::class, 'reject']);
@@ -118,4 +121,15 @@ function requireAdmin(): void
 	//     Flight::redirect('/admin/login');
 	//     exit;
 	// }
+}
+function requireAuth(){
+	if (session_status() !== PHP_SESSION_ACTIVE) {
+		session_start();
+	}
+
+	if (!isset($_SESSION['user'])) {
+		$_SESSION['flash_error'] = "Veuillez vous connecter.";
+		Flight::redirect('/');
+		exit;
+	}
 }
