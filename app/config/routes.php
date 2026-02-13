@@ -7,6 +7,7 @@ use app\controllers\CategorieController;
 use app\controllers\PropositionController;
 
 use app\controllers\AuthClient;
+use app\controllers\ObjetController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
@@ -21,7 +22,9 @@ $router->group('', function (Router $router) {
 		Flight::render('client/login');
 	});
 
+	$router->get('/index', [ObjetController::class, 'index']);
 
+	$router->get('/objet/@id:[0-9]+', [ObjetController::class, 'show']);
 
     $router->group('/auth', function () use ($router) {
         $router->get('/register', function () {
