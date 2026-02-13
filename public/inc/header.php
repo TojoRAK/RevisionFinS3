@@ -17,7 +17,7 @@
                     <li class="nav-item"><a class="nav-link tt-nav-link" href="/index">Objets</a></li>
                     <li class="nav-item"><a class="nav-link tt-nav-link" href="/my-objets">Mes objets</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/offers.html">Échanges</a></li>
+                    <li class="nav-item"><a class="nav-link tt-nav-link" href="/propositions/list">Échanges</a></li>
                     <li class="nav-item"><a class="nav-link tt-nav-link" href="../client/profile.html">Profil</a></li>
 
                     <li class="nav-item d-flex align-items-center gap-2 ms-lg-2">
